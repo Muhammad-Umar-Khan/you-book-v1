@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import SearchFilter from "../SearchFilter/SearchFilter";
 import DeleteUser from "./DeleteUser";
 import EditUser from "./EditUser";
 import AddNewUser from "./AddNewUser";
+import { getAllUsers } from "../../services/api";
 
 const Users = () => {
   const navigate = useNavigate();
@@ -14,15 +14,15 @@ const Users = () => {
   const navigateToDetails = (id) => {
     navigate(`details/${id}`);
   };
+
+  const loadUsers = async () => {
+    setIsLoading(true);
+    const loadedUsers = await getAllUsers();
+    setIsLoading(false);
+    setUsers(loadedUsers.data);
+  };
+
   useEffect(() => {
-    const loadUsers = async () => {
-      setIsLoading(true);
-      const loadedUsers = await axios.get(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      setIsLoading(false);
-      setUsers(loadedUsers.data);
-    };
     try {
       loadUsers();
     } catch (error) {
@@ -66,7 +66,7 @@ const Users = () => {
                 {user.email}
               </td>
               <td>
-                <EditUser user={user} setUsers={setUsers} users={users} />
+                <EditUser user={user} setUsers={setUsers} users={users} /> 
               </td>
               <td>
                 <DeleteUser

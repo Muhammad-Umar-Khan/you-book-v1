@@ -1,18 +1,17 @@
-import axios from "axios";
 import { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { getPostComments } from "../../services/api";
 
 const PostComments = () => {
   const [comments, setComments] = useState([]);
   const { postId } = useParams();
+  const loadPostComments = async () => {
+    const response = await getPostComments(postId);
+    const extractedData = response.data;
+    setComments(extractedData);
+  };
+
   useEffect(() => {
-    const loadPostComments = async () => {
-      const response = await axios.get(
-        `https://jsonplaceholder.typicode.com/comments?postId=${postId}`
-      );
-      const ExData = response.data;
-      setComments(ExData);
-    };
     try {
       loadPostComments();
     } catch (error) {

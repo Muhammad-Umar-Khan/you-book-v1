@@ -1,10 +1,6 @@
 import axios from "axios";
 
-const DeleteUser = (props) => {
-  const userId = props.userId;
-  const users = props.users;
-  const setUsers = props.setUsers;
-
+const DeleteUser = ({ userId, users, setUsers }) => {
   const deleteUser = async () => {
     await axios.delete(`https://jsonplaceholder.typicode.com/users/${userId}`);
 

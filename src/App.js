@@ -1,11 +1,12 @@
 import { Fragment } from "react";
-import "./App.css";
-import MainNav from "./Navigations/MainNav";
+import Router from "./Navigations/Router";
+
+import "../src/assets/styles/css/main.css";
 
 function App() {
   return (
     <Fragment>
-      <MainNav />
+      <Router />
     </Fragment>
   );
 }

@@ -1,12 +1,10 @@
-import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import "./SearchFilter.css";
+import { getData } from "../../services/api";
 
 //can be moved inside the SearchFilter component;
 function debounced(func, timeout = 300) {
   let timer;
   return (...args) => {
-    console.log(args);
     clearTimeout(timer);
     timer = setTimeout(() => {
       func.apply(this, args);
@@ -18,9 +16,7 @@ const SearchFilter = ({ setUsers }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   async function loadFiltredUsers(searchTerm) {
-    let response = await axios.get(
-      `https://jsonplaceholder.typicode.com/users?q=${searchTerm}`
-    );
+    let response = await getData(searchTerm);
     setUsers(response.data);
   }
 
@@ -28,7 +24,7 @@ const SearchFilter = ({ setUsers }) => {
 
   useEffect(() => {
     debounce(searchTerm);
-  }, [searchTerm]);
+  }, [searchTerm], debounce);
 
   return (
     <input

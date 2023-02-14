@@ -1,19 +1,41 @@
-import "./userPosts.css";
-
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-// import Paginate from "../Paginate/Paginate";
+import {
+  getPostComments,
+  getPostsForUserAsc,
+  getPostsForUserDesc,
+} from "../../services/api";
+
+const DisplayCommentsComponent = ({ isCommentsLoading, comments, post }) => {
+  return (
+    <div className="comments">
+      <h2>Comments</h2>
+      {isCommentsLoading ? (
+        <p>Loading...</p>
+      ) : (
+        comments.map(
+          (comment) =>
+            //post.id === comment.postId can be removed as well bcz we are already checkinh it on line 91;
+            post.id === comment.postId && (
+              <div key={comment.id}>
+                <p>C#{comment.id}</p>
+                <strong>{comment.name}</strong>
+                <p>{comment.body}</p>
+              </div>
+            )
+        )
+      )}
+    </div>
+  );
+};
 
 const UserPosts = () => {
   const [order, setOrder] = useState(false);
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
-  const [arePostsLoading, setArePoastLoading] = useState(false);
-  const [areCommentsLoading, setAreCommentsLoading] = useState(false);
+  const [isPostsLoading, setIsPoastLoading] = useState(false);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [page, setPage] = useState(1);
-  // const [currentPage, setCurrentPage] = useState("1");
-  // const [postsPerPage, setPostsPerPage] = useState("5");
   const { userId } = useParams();
 
   const toggleComments = (postId) => {
@@ -26,47 +48,43 @@ const UserPosts = () => {
   };
 
   const loadPostComments = async (postId) => {
-    setAreCommentsLoading(true);
+    setIsCommentsLoading(true);
     toggleComments(postId);
-    const response = await axios.get(
-      `https://jsonplaceholder.typicode.com/comments?postId=${postId}`
-    );
-    const ExData = response.data;
-    setComments(ExData);
-    setAreCommentsLoading(false);
+    const response = await getPostComments(postId);
+    const extractedData = response.data;
+    setComments(extractedData);
+    setIsCommentsLoading(false);
   };
 
+  const loadPostsForUser = useCallback(async () => {
+    setIsPoastLoading(true);
+    let response;
+    if (order) {
+      response = await getPostsForUserDesc(userId, page);
+      const mewData = response.data;
+      setPosts(mewData);
+    } else {
+      response = await getPostsForUserAsc(userId, page);
+      const mewData = response.data;
+      setPosts(mewData);
+    }
+    const extractedPosts = response.data;
+    const mutatedPosts = extractedPosts.map((post) => ({
+      ...post,
+      showComments: false,
+    }));
+    setPosts(mutatedPosts);
+    setIsPoastLoading(false);
+  }, [order, page, userId]);
+
   useEffect(() => {
-    const loadPostsForUser = async () => {
-      setArePoastLoading(true);
-      let response;
-      if (order) {
-        response = await axios.get(
-          `https://jsonplaceholder.typicode.com/posts?_sort=id&_order=DESC&userId=${userId}&_limit=5&_page=${page}`
-        );
-        const mewData = await response.data;
-        setPosts(mewData);
-      } else {
-        response = await axios.get(
-          `https://jsonplaceholder.typicode.com/posts?_sort=id&_order=ASC&userId=${userId}&_limit=5&_page=${page}`
-        );
-        const mewData = await response.data;
-        setPosts(mewData);
-      }
-      const extractedPosts = response.data;
-      const mutatedPosts = extractedPosts.map((post) => ({
-        ...post,
-        showComments: false,
-      }));
-      setPosts(mutatedPosts);
-      setArePoastLoading(false);
-    };
     try {
       loadPostsForUser();
     } catch (error) {
       console.log(error.message);
     }
-  }, [userId, order, page]);
+  }, [userId, order, page, loadPostsForUser]);
+
   return (
     <div className="container mt-5">
       <div className="row">
@@ -74,7 +92,7 @@ const UserPosts = () => {
           Change order
         </button>
         <h2>Posts</h2>
-        {arePostsLoading ? (
+        {isPostsLoading ? (
           <p>Loading Posts...</p>
         ) : (
           posts.map((post) => (
@@ -87,25 +105,15 @@ const UserPosts = () => {
               <p>P#{post.id}</p>
               <strong>{post.title}</strong>
               <p>{post.body}</p>
-              {post.showComments && // && comments[0].length > 0 can be replaced with comments[0]?.postId;
+
+              {post.showComments &&
+                // && comments[0].length > 0 can be replaced with comments[0]?.postId;
                 comments[0]?.postId === post.id && (
-                  <div className="comments">
-                    <h2>Comments</h2>
-                    {areCommentsLoading ? (
-                      <p>Loading...</p>
-                    ) : (
-                      comments.map(
-                        (comment) =>
-                          post.id === comment.postId && ( //post.id === comment.postId can be removed as well bcz we are already checkinh it on line 91;
-                            <div key={comment.id}>
-                              <p>C#{comment.id}</p>
-                              <strong>{comment.name}</strong>
-                              <p>{comment.body}</p>
-                            </div>
-                          )
-                      )
-                    )}
-                  </div>
+                  <DisplayCommentsComponent
+                    isCommentsLoading={isCommentsLoading}
+                    comments={comments}
+                    post={post}
+                  />
                 )}
             </div>
           ))

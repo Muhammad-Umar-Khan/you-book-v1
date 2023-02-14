@@ -1,19 +1,19 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Users from "../components/users/users";
+import Users from "../components/users/Users";
 import UsersDetails from "../components/details/userDetails";
 import UserPosts from "../components/posts/userPosts";
 
-const MainNav = () => {
+const Router = () => {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Users />}></Route>
         <Route path="details/:userId" element={<UsersDetails />}></Route>
         <Route path="details/:userId/posts" element={<UserPosts />}></Route>
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 };
 
-export default MainNav;
+export default Router;

@@ -2,44 +2,31 @@ import axios from "axios";
 import { Fragment, useState } from "react";
 
 const AddNewUser = ({ users, setUsers }) => {
-  const [name, setName] = useState("");
-  const [username, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-
-  const nameChangeHandler = (event) => {
-    setName(event.target.value);
+  const initialUser = {
+    name: "",
+    username: "",
+    email: "",
+    address: "",
   };
 
-  const userNameChangeHandler = (event) => {
-    setUserName(event.target.value);
-  };
-
-  const emailChangeHandler = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const addressChangeHandler = (event) => {
-    setAddress(event.target.value);
-  };
+  const [user, setUser] = useState(initialUser);
 
   const addUserHandler = async () => {
     const response = await axios.post(
       `https://jsonplaceholder.typicode.com/users`,
       {
-        id: Math.random(),
-        name,
-        username,
-        email,
+        name: user.name,
+        username: user.username,
+        email: user.email,
         address: {
-          street: address,
+          street: user.address,
           city: "",
           suite: "",
         },
       }
     );
-    const user = response.data;
-    setUsers([...users, user]);
+    const createdUser = response.data;
+    setUsers([...users, createdUser]);
   };
 
   return (
@@ -79,32 +66,40 @@ const AddNewUser = ({ users, setUsers }) => {
                 Name:
                 <input
                   className="form-control"
-                  value={name}
-                  onChange={nameChangeHandler}
+                  value={user.name}
+                  onChange={(event) =>
+                    setUser({ ...user, name: event.target.value })
+                  }
                 ></input>
               </label>
               <label className="text-start my-1">
                 Username:
                 <input
                   className="form-control"
-                  value={username}
-                  onChange={userNameChangeHandler}
+                  value={user.username}
+                  onChange={(event) =>
+                    setUser({ ...user, username: event.target.value })
+                  }
                 ></input>
               </label>
               <label className="text-start my-1">
                 Email:
                 <input
                   className="form-control"
-                  value={email}
-                  onChange={emailChangeHandler}
+                  value={user.email}
+                  onChange={(event) =>
+                    setUser({ ...user, email: event.target.value })
+                  }
                 ></input>
               </label>
               <label className="text-start my-1">
                 Address:
                 <input
                   className="form-control"
-                  value={address}
-                  onChange={addressChangeHandler}
+                  value={user.address}
+                  onChange={(event) =>
+                    setUser({ ...user, address: event.target.value })
+                  }
                 ></input>
               </label>
             </div>
