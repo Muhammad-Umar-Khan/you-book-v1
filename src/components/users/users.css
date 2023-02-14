@@ -1,0 +1,19 @@
+.align-items-end{
+    display: flex;
+    font-size: 20px;
+    align-items: center;
+    justify-content: end;
+    margin-right: 50px;
+    margin-bottom: 20px;
+}
+
+.align-items-end input{
+    margin-right: 5px;
+    border: 2px solid blue;
+    height: 40px;
+    border-radius: 10px;
+}
+
+.align-items-end input:focus{
+    outline: none;
+}
