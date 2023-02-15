@@ -1,13 +1,13 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import axios from "axios";
+import { getUserDetailsRequest } from "../../services/api";
 
 const UsersDetails = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const [details, setDetails] = useState({});
-  const [isLoadin, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigateToPostsPage = () => {
     return navigate(`/details/${userId}/posts`);
@@ -15,9 +15,7 @@ const UsersDetails = () => {
 
   const loadUserDetails = useCallback(async () => {
     setIsLoading(true);
-    const response = await axios.get(
-      `https://jsonplaceholder.typicode.com/users/${userId}`
-    );
+    const response = await getUserDetailsRequest(userId);
     setIsLoading(false);
     const extractedDetails = response.data;
     setDetails(extractedDetails);
@@ -34,7 +32,7 @@ const UsersDetails = () => {
   return (
     <Fragment>
       <div className="text-center mt-5">
-        {isLoadin ? (
+        {isLoading ? (
           <p>Loading...</p>
         ) : (
           <div key={details?.id}>

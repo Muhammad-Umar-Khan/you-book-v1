@@ -37,3 +37,15 @@ export const getAllUsers = async () => {
 export const createNewUser = async (data) => {
   return await axios.post(`https://jsonplaceholder.typicode.com/users`, data);
 };
+
+export const deleteUserRequest = async (userId) => {
+  return await axios.delete(
+    `https://jsonplaceholder.typicode.com/users/${userId}`
+  );
+};
+
+export const getUserDetailsRequest  = async (userId) => {
+ return await axios.get(
+    `https://jsonplaceholder.typicode.com/users/${userId}`
+  );
+}

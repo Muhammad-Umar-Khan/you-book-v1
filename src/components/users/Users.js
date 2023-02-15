@@ -49,19 +49,19 @@ const Users = () => {
             <tr key={user.id}>
               <td
                 onClick={() => navigateToDetails(user.id)}
-                style={{ cursor: "pointer" }}
+                className="cursor"
               >
                 {user.id}
               </td>
               <td
                 onClick={() => navigateToDetails(user.id)}
-                style={{ cursor: "pointer" }}
+                className="cursor"
               >
                 {user.name}
               </td>
               <td
                 onClick={() => navigateToDetails(user.id)}
-                style={{ cursor: "pointer" }}
+                className="cursor"
               >
                 {user.email}
               </td>

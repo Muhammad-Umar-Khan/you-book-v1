@@ -4,10 +4,10 @@ import { Modal } from "react-bootstrap";
 import { createNewUser } from "../../services/api";
 
 const AddNewUser = ({ users, setUsers }) => {
-  const [show, setShow] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  const handleShow = () => setShow(true);
-  const handleClose = () => setShow(false);
+  const modalShowHandler = () => setShowModal(true);
+  const modalHideHandler = () => setShowModal(false);
 
   const initialUser = {
     name: "",
@@ -19,7 +19,7 @@ const AddNewUser = ({ users, setUsers }) => {
   const [user, setUser] = useState(initialUser);
 
   const addUserHandler = async () => {
-    setShow(false);
+    setShowModal(false);
     const data = {
       name: user.name,
       username: user.username,
@@ -38,8 +38,8 @@ const AddNewUser = ({ users, setUsers }) => {
 
   return (
     <Fragment>
-      <button onClick={handleShow}>Add +</button>
-      <Modal show={show} onHide={handleClose}>
+      <button onClick={modalShowHandler}>Add +</button>
+      <Modal show={showModal} onHide={modalHideHandler}>
         <Modal.Header closeButton>
           <Modal.Title>Add new user</Modal.Title>
         </Modal.Header>
@@ -92,7 +92,7 @@ const AddNewUser = ({ users, setUsers }) => {
           <button variant="secondary" onClick={addUserHandler}>
             Add
           </button>
-          <button variant="primary" onClick={handleClose}>
+          <button variant="primary" onClick={modalHideHandler}>
             Cancel
           </button>
         </Modal.Footer>

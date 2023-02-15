@@ -1,9 +1,8 @@
-import axios from "axios";
+import { deleteUserRequest } from "../../services/api";
 
 const DeleteUser = ({ userId, users, setUsers }) => {
   const deleteUser = async () => {
-    await axios.delete(`https://jsonplaceholder.typicode.com/users/${userId}`);
-
+    await deleteUserRequest(userId);
     const newUsers = users.filter((user) => user.id !== userId); //no relationship with response;
     setUsers(newUsers);
   };

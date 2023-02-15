@@ -1,7 +1,7 @@
-.comments{
-    width: 90%;
-    height: 400px;
-    overflow: scroll;
-    background-color: lightblue;
-    padding: 10px;
+.comments {
+  width: 90%;
+  height: 400px;
+  overflow: scroll;
+  background-color: lightblue;
+  padding: 10px;
 }

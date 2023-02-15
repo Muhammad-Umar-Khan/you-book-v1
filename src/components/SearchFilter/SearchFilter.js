@@ -2,12 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 import { getData } from "../../services/api";
 
 //can be moved inside the SearchFilter component;
-function debounced(func, timeout) {
+function debounced(debounceFunc, timeout) {
   let timer;
   return (...args) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      func.apply(this, args);
+      debounceFunc.apply(this, args);
     }, timeout);
   };
 }

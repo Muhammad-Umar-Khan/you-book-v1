@@ -6,6 +6,9 @@ import {
   getPostsForUserDesc,
 } from "../../services/api";
 
+const minPagesLength = 1;
+const maxPagesLength = 2;
+
 const DisplayCommentsComponent = ({ isCommentsLoading, comments, post }) => {
   return (
     <div className="comments">
@@ -33,7 +36,7 @@ const UserPosts = () => {
   const [order, setOrder] = useState(false);
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
-  const [isPostsLoading, setIsPoastLoading] = useState(false);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const { userId } = useParams();
@@ -57,7 +60,7 @@ const UserPosts = () => {
   };
 
   const loadPostsForUser = useCallback(async () => {
-    setIsPoastLoading(true);
+    setIsPostsLoading(true);
     let response;
     if (order) {
       response = await getPostsForUserDesc(userId, page);
@@ -74,7 +77,7 @@ const UserPosts = () => {
       showComments: false,
     }));
     setPosts(mutatedPosts);
-    setIsPoastLoading(false);
+    setIsPostsLoading(false);
   }, [order, page, userId]);
 
   useEffect(() => {
@@ -97,8 +100,7 @@ const UserPosts = () => {
         ) : (
           posts.map((post) => (
             <div
-              style={{ cursor: "pointer" }}
-              className="col-md-10 offset-1 mb-3"
+              className="col-md-10 offset-1 mb-3 cursor"
               key={post.id}
               onClick={() => loadPostComments(post.id)}
             >
@@ -120,13 +122,13 @@ const UserPosts = () => {
         )}
         <button
           className="btn btn-sm btn-secondary mb-1 col-md-2 offset-5"
-          disabled={page === 1}
+          disabled={page <= minPagesLength}
           onClick={() => setPage((prevState) => prevState - 1)}
         >
           Prev
         </button>
         <button
-          disabled={page >= 2}
+          disabled={page >= maxPagesLength}
           onClick={() => setPage((prevState) => prevState + 1)}
           className="btn btn-sm btn-secondary col-md-2 offset-5"
         >
