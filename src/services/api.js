@@ -34,4 +34,6 @@ export const getAllUsers = async () => {
   return await axios.get("https://jsonplaceholder.typicode.com/users");
 };
 
-
+export const createNewUser = async (data) => {
+  return await axios.post(`https://jsonplaceholder.typicode.com/users`, data);
+};

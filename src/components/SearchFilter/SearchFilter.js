@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getData } from "../../services/api";
 
 //can be moved inside the SearchFilter component;
-function debounced(func, timeout = 300) {
+function debounced(func, timeout) {
   let timer;
   return (...args) => {
     clearTimeout(timer);
@@ -20,11 +20,11 @@ const SearchFilter = ({ setUsers }) => {
     setUsers(response.data);
   }
 
-  const debounce = useCallback(debounced(loadFiltredUsers, 500), []);
+  const debounce = useCallback(debounced(loadFiltredUsers, 300), []);
 
   useEffect(() => {
     debounce(searchTerm);
-  }, [searchTerm], debounce);
+  }, [searchTerm, debounce]);
 
   return (
     <input
