@@ -33,7 +33,6 @@ const AddNewUser = ({ users, setUsers }) => {
 
     const response = await createNewUser(data);
     const createdUser = await response.data;
-    console.log("created user", createNewUser);
     setUsers([...users, createdUser]);
   };
 
