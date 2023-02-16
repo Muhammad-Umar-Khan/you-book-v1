@@ -5,6 +5,6 @@ input {
   border-radius: 10px;
 }
 
-input {
+input:focus{
   outline: none;
 }

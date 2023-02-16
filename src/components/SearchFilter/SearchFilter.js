@@ -1,23 +1,22 @@
 import { useCallback, useEffect, useState } from "react";
 import { getData } from "../../services/api";
 
-//can be moved inside the SearchFilter component;
-function debounced(debounceFunc, timeout) {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      debounceFunc.apply(this, args);
-    }, timeout);
-  };
-}
-
 const SearchFilter = ({ setUsers }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   async function loadFiltredUsers(searchTerm) {
-    let response = await getData(searchTerm);
-    setUsers(response.data);
+    let {data} = await getData(searchTerm);
+    setUsers(data);
+  }
+
+  function debounced(debounceFunc, timeout) {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        debounceFunc.apply(this, args);
+      }, timeout);
+    };
   }
 
   const debounce = useCallback(debounced(loadFiltredUsers, 300), []);

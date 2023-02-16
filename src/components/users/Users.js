@@ -16,18 +16,18 @@ const Users = () => {
   };
 
   const loadUsers = async () => {
-    setIsLoading(true);
-    const loadedUsers = await getAllUsers();
-    setIsLoading(false);
-    setUsers(loadedUsers.data);
-  };
-
-  useEffect(() => {
     try {
-      loadUsers();
+      setIsLoading(true);
+      const loadedUsers = await getAllUsers();
+      setIsLoading(false);
+      setUsers(loadedUsers.data);
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  useEffect(() => {
+    loadUsers();
   }, []);
 
   return (
@@ -49,24 +49,24 @@ const Users = () => {
             <tr key={user.id}>
               <td
                 onClick={() => navigateToDetails(user.id)}
-                className="cursor"
+                className="cursor-pointer"
               >
                 {user.id}
               </td>
               <td
                 onClick={() => navigateToDetails(user.id)}
-                className="cursor"
+                className="cursor-pointer"
               >
                 {user.name}
               </td>
               <td
                 onClick={() => navigateToDetails(user.id)}
-                className="cursor"
+                className="cursor-pointer"
               >
                 {user.email}
               </td>
               <td>
-                <EditUser user={user} setUsers={setUsers} users={users} /> 
+                <EditUser user={user} setUsers={setUsers} users={users} />
               </td>
               <td>
                 <DeleteUser

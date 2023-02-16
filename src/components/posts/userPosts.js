@@ -60,32 +60,32 @@ const UserPosts = () => {
   };
 
   const loadPostsForUser = useCallback(async () => {
-    setIsPostsLoading(true);
-    let response;
-    if (order) {
-      response = await getPostsForUserDesc(userId, page);
-      const mewData = response.data;
-      setPosts(mewData);
-    } else {
-      response = await getPostsForUserAsc(userId, page);
-      const mewData = response.data;
-      setPosts(mewData);
-    }
-    const extractedPosts = response.data;
-    const mutatedPosts = extractedPosts.map((post) => ({
-      ...post,
-      showComments: false,
-    }));
-    setPosts(mutatedPosts);
-    setIsPostsLoading(false);
-  }, [order, page, userId]);
-
-  useEffect(() => {
     try {
-      loadPostsForUser();
+      setIsPostsLoading(true);
+      let response;
+      if (order) {
+        response = await getPostsForUserDesc(userId, page);
+        const mewData = response.data;
+        setPosts(mewData);
+      } else {
+        response = await getPostsForUserAsc(userId, page);
+        const mewData = response.data;
+        setPosts(mewData);
+      }
+      const extractedPosts = response.data;
+      const mutatedPosts = extractedPosts.map((post) => ({
+        ...post,
+        showComments: false,
+      }));
+      setPosts(mutatedPosts);
+      setIsPostsLoading(false);
     } catch (error) {
       console.log(error.message);
     }
+  }, [order, page, userId]);
+
+  useEffect(() => {
+    loadPostsForUser();
   }, [userId, order, page, loadPostsForUser]);
 
   return (
@@ -100,7 +100,7 @@ const UserPosts = () => {
         ) : (
           posts.map((post) => (
             <div
-              className="col-md-10 offset-1 mb-3 cursor"
+              className="col-md-10 offset-1 mb-3 cursor-pointer"
               key={post.id}
               onClick={() => loadPostComments(post.id)}
             >

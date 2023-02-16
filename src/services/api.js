@@ -46,6 +46,6 @@ export const deleteUserRequest = async (userId) => {
 
 export const getUserDetailsRequest = async (userId) => {
   return await axios.get(
-    `https://jsonplaceholder.typicode.com/users/${userId}`
+    `https://jsonplaceholder.typicode.com/user/${userId}`
   );
 };

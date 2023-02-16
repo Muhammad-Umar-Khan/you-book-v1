@@ -6,17 +6,17 @@ const PostComments = () => {
   const [comments, setComments] = useState([]);
   const { postId } = useParams();
   const loadPostComments = async () => {
-    const response = await getPostComments(postId);
-    const extractedData = response.data;
-    setComments(extractedData);
+    try {
+      const response = await getPostComments(postId);
+      const { data } = response;
+      setComments(data);
+    } catch (error) {
+      throw new Error("Could't get post's comments");
+    }
   };
 
   useEffect(() => {
-    try {
-      loadPostComments();
-    } catch (error) {
-      throw new Error("Could't load comments");
-    }
+    loadPostComments();
   }, [postId]);
   return (
     <Fragment>

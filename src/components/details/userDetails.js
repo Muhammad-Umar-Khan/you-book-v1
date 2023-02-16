@@ -1,34 +1,53 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 import { getUserDetailsRequest } from "../../services/api";
 
 const UsersDetails = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
+  console.log(useParams());
   const [details, setDetails] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const navigateToPostsPage = () => {
     return navigate(`/details/${userId}/posts`);
   };
 
+ 
+
   const loadUserDetails = useCallback(async () => {
-    setIsLoading(true);
-    const response = await getUserDetailsRequest(userId);
-    setIsLoading(false);
-    const extractedDetails = response.data;
-    setDetails(extractedDetails);
+    try {
+      setIsLoading(true);
+      const response = await getUserDetailsRequest(userId);
+      setIsLoading(false);
+      const { data } = response;
+      setDetails(data);
+    } catch (error) {
+      setIsError(true);
+    }
   }, [userId]);
 
   useEffect(() => {
-    try {
-      loadUserDetails();
-    } catch (error) {
-      console.log(error.message);
-    }
+    loadUserDetails();
   }, [userId, loadUserDetails]);
 
+  if (isError) {
+    return (
+      <Fragment>
+        <ToastContainer
+          closeOnClick={true}
+          position={"bottom-center"}
+          autoClose={false}
+        >
+          {toast("Error loading details")}
+        </ToastContainer>
+        <a href={window.location.href}>Try Again</a>
+      </Fragment>
+    );
+  }
   return (
     <Fragment>
       <div className="text-center mt-5">

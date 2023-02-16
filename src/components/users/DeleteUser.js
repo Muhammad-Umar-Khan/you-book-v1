@@ -9,7 +9,7 @@ const DeleteUser = ({ userId, users, setUsers }) => {
 
   return (
     <div>
-      <button onClick={deleteUser} className="btn btn-danger">
+      <button onClick={deleteUser}>
         Delete
       </button>
     </div>
