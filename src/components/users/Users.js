@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import SearchFilter from "../SearchFilter/SearchFilter";
 import DeleteUser from "./DeleteUser";
-import EditUser from "./EditUser";
+import EditUser from "../../Modal/users/EditUser";
 import AddNewUser from "./AddNewUser";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAllUsers } from "../../services/api";
 
 const Users = () => {
@@ -12,10 +12,13 @@ const Users = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigateToDetails = (id) => {
-    navigate(`details/${id}`);
+    navigate(`/users/details/${id}`);
   };
 
   const loadUsers = async () => {
+    if (window.location.pathname === "/") {
+      return navigate("/users");
+    }
     try {
       setIsLoading(true);
       const loadedUsers = await getAllUsers();

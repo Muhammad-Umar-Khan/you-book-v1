@@ -7,7 +7,6 @@ import { getUserDetailsRequest } from "../../services/api";
 const UsersDetails = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
-  console.log(useParams());
   const [details, setDetails] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);

@@ -54,8 +54,8 @@ const UserPosts = () => {
     setIsCommentsLoading(true);
     toggleComments(postId);
     const response = await getPostComments(postId);
-    const extractedData = response.data;
-    setComments(extractedData);
+    const {data} = response;
+    setComments(data);
     setIsCommentsLoading(false);
   };
 
@@ -65,15 +65,15 @@ const UserPosts = () => {
       let response;
       if (order) {
         response = await getPostsForUserDesc(userId, page);
-        const mewData = response.data;
-        setPosts(mewData);
+        const {data} = response;
+        setPosts(data);
       } else {
         response = await getPostsForUserAsc(userId, page);
-        const mewData = response.data;
-        setPosts(mewData);
+        const {data} = response;
+        setPosts(data);
       }
-      const extractedPosts = response.data;
-      const mutatedPosts = extractedPosts.map((post) => ({
+      const {data} = response;
+      const mutatedPosts = data.map((post) => ({
         ...post,
         showComments: false,
       }));

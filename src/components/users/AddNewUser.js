@@ -1,45 +1,38 @@
 import { Fragment, useState } from "react";
-
 import { Modal } from "react-bootstrap";
 import { createNewUser } from "../../services/api";
+import { detaGenerator } from "../../Modal/users/EditUser";
 
 const AddNewUser = ({ users, setUsers }) => {
   const [showModal, setShowModal] = useState(false);
-
-  const modalShowHandler = () => setShowModal(true);
-  const modalHideHandler = () => setShowModal(false);
 
   const initialUser = {
     name: "",
     username: "",
     email: "",
-    address: "",
+    address: {
+      street: "",
+      city: "",
+      suite: "",
+    },
   };
 
   const [user, setUser] = useState(initialUser);
 
   const addUserHandler = async () => {
-    setShowModal(false);
-    const data = {
-      name: user.name,
-      username: user.username,
-      email: user.email,
-      address: {
-        street: user.address,
-        city: "",
-        suite: "",
-      },
-    };
-
-    const response = await createNewUser(data);
-    const createdUser = await response.data;
-    setUsers([...users, createdUser]);
+    if (user.name) {
+      setShowModal(false);
+      const payLoad = detaGenerator(user);
+      const response = await createNewUser(payLoad);
+      const { data } = response;
+      setUsers([...users, data]);
+    }
   };
 
   return (
     <Fragment>
-      <button onClick={modalShowHandler}>Add +</button>
-      <Modal show={showModal} onHide={modalHideHandler}>
+      <button onClick={() => setShowModal(true)}>Add +</button>
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Add new user</Modal.Title>
         </Modal.Header>
@@ -48,7 +41,6 @@ const AddNewUser = ({ users, setUsers }) => {
             Name:
             <input
               className="form-control"
-              value={user.name}
               onChange={(event) =>
                 setUser({ ...user, name: event.target.value })
               }
@@ -58,7 +50,6 @@ const AddNewUser = ({ users, setUsers }) => {
             UserName:
             <input
               className="form-control"
-              value={user.username}
               onChange={(event) =>
                 setUser({ ...user, username: event.target.value })
               }
@@ -68,31 +59,49 @@ const AddNewUser = ({ users, setUsers }) => {
             Email:
             <input
               className="form-control"
-              value={user.email}
               onChange={(event) =>
                 setUser({ ...user, email: event.target.value })
               }
             ></input>
           </label>
           <label className="text-start my-1">
-            Address:
-            <textarea
+            Address, Street
+            <input
               className="form-control"
-              value={user.address}
               onChange={(event) =>
                 setUser({
                   ...user,
-                  address: { street: event.target.value },
+                  address: { ...user.address, street: event.target.value },
                 })
               }
-            ></textarea>
+            ></input>
+            City:
+            <input
+              className="form-control"
+              onChange={(event) =>
+                setUser({
+                  ...user,
+                  address: { ...user.address, city: event.target.value },
+                })
+              }
+            ></input>
+            Suite
+            <input
+              className="form-control"
+              onChange={(event) =>
+                setUser({
+                  ...user,
+                  address: { ...user.address, suite: event.target.value },
+                })
+              }
+            ></input>
           </label>
         </Modal.Body>
         <Modal.Footer>
           <button variant="secondary" onClick={addUserHandler}>
             Add
           </button>
-          <button variant="primary" onClick={modalHideHandler}>
+          <button variant="primary" onClick={() => setShowModal(false)}>
             Cancel
           </button>
         </Modal.Footer>

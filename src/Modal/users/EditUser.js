@@ -1,58 +1,41 @@
 import React, { Fragment, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-
 import { updateUser } from "../../services/api";
+
+export const detaGenerator = (updatedUser) => ({
+  ...updateUser,
+  name: updatedUser?.name,
+  username: updatedUser?.username,
+  email: updatedUser?.email,
+  address: {
+    street: updatedUser?.address?.street,
+    suite: updatedUser?.address?.suite,
+    city: updatedUser?.address?.city,
+  },
+});
 
 function EditUser({ user, users, setUsers }) {
   const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const initialState = detaGenerator(user);
 
-  const [updatedUser, setUpdatedUser] = useState({
-    name: user?.name,
-    username: user?.username,
-    email: user?.email,
-    address: user?.address?.street + user?.address?.suite + user?.address?.city,
-  });
+  const [updatedUser, setUpdatedUser] = useState(initialState);
 
   const updateUserHandler = async (userId) => {
     setShow(false);
-    const data = {
-      name: updatedUser.name,
-      username: updatedUser.username,
-      email: updatedUser.email,
-      address: updatedUser.address,
-    };
-
-    const response = await updateUser(userId, data);
-
-    const { name } = response.data;
-    const { username } = response.data;
-    const { email } = response.data;
-    const NewAddress =
-      response.data?.address?.street +
-      response.data?.address?.suite +
-      response.data?.address?.city;
+    const getPayLoad = detaGenerator(updatedUser);
+    const response = await updateUser(userId, getPayLoad);
     const updatedUsers = users.map((user) =>
-      user.id === userId
-        ? {
-            ...user,
-            name,
-            username,
-            email,
-            address: NewAddress,
-          }
-        : user
+      user.id === userId ? detaGenerator(response.data) : user
     );
     setUsers(updatedUsers);
   };
 
   return (
     <Fragment>
-      <button onClick={handleShow}>Edit</button>
+      <button onClick={() => setShow(true)}>Edit</button>
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Update user</Modal.Title>
         </Modal.Header>
@@ -94,14 +77,42 @@ function EditUser({ user, users, setUsers }) {
             ></input>
           </label>
           <label className="text-start my-1">
-            Address:
+            Address, Street:
             <input
               className="form-control"
-              value={updatedUser.address}
+              value={updatedUser.address.street}
               onChange={(event) =>
                 setUpdatedUser({
                   ...updatedUser,
-                  address: event.target.value,
+                  address: {
+                    ...updatedUser.address,
+                    street: event.target.value,
+                  },
+                })
+              }
+            ></input>
+            City
+            <input
+              className="form-control"
+              value={updatedUser.address.city}
+              onChange={(event) =>
+                setUpdatedUser({
+                  ...updatedUser,
+                  address: { ...updatedUser.address, city: event.target.value },
+                })
+              }
+            ></input>
+            Suite
+            <input
+              className="form-control"
+              value={updatedUser.address.suite}
+              onChange={(event) =>
+                setUpdatedUser({
+                  ...updatedUser,
+                  address: {
+                    ...updatedUser.address,
+                    suite: event.target.value,
+                  },
                 })
               }
             ></input>
@@ -109,7 +120,7 @@ function EditUser({ user, users, setUsers }) {
         </Modal.Body>
         <Modal.Footer>
           <button onClick={() => updateUserHandler(user.id)}>Update</button>
-          <button onClick={handleClose}>Cancel</button>
+          <button onClick={() => setShow(false)}>Cancel</button>
         </Modal.Footer>
       </Modal>
     </Fragment>
