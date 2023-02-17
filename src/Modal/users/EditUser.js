@@ -36,7 +36,6 @@ function EditUser({ user, users, setUsers }) {
             return (
               <Fragment key={elem.id}>
                 <label className="text-start my-1">
-                  {console.log(inputName)}
                   {elem.title}
                   <input
                     className="form-control"
