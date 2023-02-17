@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
 import Modal from "react-bootstrap/Modal";
+import { API } from "../../common/PathConstants";
 import { updateUser } from "../../services/api";
 import { dataGenerator } from "../../common/DataGenerator";
 import { INPUT_ELEMENTS } from "../../common/InputElements";
