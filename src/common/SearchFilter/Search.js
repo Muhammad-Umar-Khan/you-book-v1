@@ -23,7 +23,7 @@ const SearchFilter = ({ setUsers }) => {
 
   useEffect(() => {
     debounce(searchTerm);
-  }, [searchTerm, debounce]);
+  }, [searchTerm]);
 
   return (
     <input
