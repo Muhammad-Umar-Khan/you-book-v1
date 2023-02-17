@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { createNewUser } from "../../services/api";
-import { detaGenerator } from "../../Modal/users/EditUser";
+import { dataGenerator } from "../../common/DataGenerator";
 
 const AddNewUser = ({ users, setUsers }) => {
   const [showModal, setShowModal] = useState(false);
@@ -22,7 +22,7 @@ const AddNewUser = ({ users, setUsers }) => {
   const addUserHandler = async () => {
     if (user.name) {
       setShowModal(false);
-      const payLoad = detaGenerator(user);
+      const payLoad = dataGenerator(user);
       const response = await createNewUser(payLoad);
       const { data } = response;
       setUsers([...users, data]);

@@ -1,13 +1,8 @@
+import PrevBtn from "../../common/buttons/PrevBtn";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  getPostComments,
-  getPostsForUserAsc,
-  getPostsForUserDesc,
-} from "../../services/api";
-
-const minPagesLength = 1;
-const maxPagesLength = 2;
+import { getPostComments, getPostsForUser } from "../../services/api";
+import NextBtn from "../../common/buttons/NextBtn";
 
 const DisplayCommentsComponent = ({ isCommentsLoading, comments, post }) => {
   return (
@@ -33,12 +28,12 @@ const DisplayCommentsComponent = ({ isCommentsLoading, comments, post }) => {
 };
 
 const UserPosts = () => {
-  const [order, setOrder] = useState(false);
+  const [order, setOrder] = useState("ASC");
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const { userId } = useParams();
 
   const toggleComments = (postId) => {
@@ -54,7 +49,7 @@ const UserPosts = () => {
     setIsCommentsLoading(true);
     toggleComments(postId);
     const response = await getPostComments(postId);
-    const {data} = response;
+    const { data } = response;
     setComments(data);
     setIsCommentsLoading(false);
   };
@@ -62,17 +57,10 @@ const UserPosts = () => {
   const loadPostsForUser = useCallback(async () => {
     try {
       setIsPostsLoading(true);
-      let response;
-      if (order) {
-        response = await getPostsForUserDesc(userId, page);
-        const {data} = response;
-        setPosts(data);
-      } else {
-        response = await getPostsForUserAsc(userId, page);
-        const {data} = response;
-        setPosts(data);
-      }
-      const {data} = response;
+      let response = await getPostsForUser(userId, page, order);
+      const { data } = response;
+      setPosts(data);
+
       const mutatedPosts = data.map((post) => ({
         ...post,
         showComments: false,
@@ -91,7 +79,11 @@ const UserPosts = () => {
   return (
     <div className="container mt-5">
       <div className="row">
-        <button onClick={() => setOrder((prevState) => !prevState)}>
+        <button
+          onClick={() =>
+            setOrder((prevState) => (prevState === "ASC" ? "DESC" : "ASC"))
+          }
+        >
           Change order
         </button>
         <h2>Posts</h2>
@@ -120,20 +112,8 @@ const UserPosts = () => {
             </div>
           ))
         )}
-        <button
-          className="btn btn-sm btn-secondary mb-1 col-md-2 offset-5"
-          disabled={page <= minPagesLength}
-          onClick={() => setPage((prevState) => prevState - 1)}
-        >
-          Prev
-        </button>
-        <button
-          disabled={page >= maxPagesLength}
-          onClick={() => setPage((prevState) => prevState + 1)}
-          className="btn btn-sm btn-secondary col-md-2 offset-5"
-        >
-          Next
-        </button>
+        <PrevBtn page={page} setPage={setPage} />
+        <NextBtn page={page} setPage={setPage} />
       </div>
     </div>
   );

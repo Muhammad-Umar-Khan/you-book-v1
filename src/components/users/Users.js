@@ -1,4 +1,4 @@
-import SearchFilter from "../SearchFilter/SearchFilter";
+import SearchFilter from "../../common/SearchFilter/Search";
 import DeleteUser from "./DeleteUser";
 import EditUser from "../../Modal/users/EditUser";
 import AddNewUser from "./AddNewUser";
