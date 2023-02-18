@@ -1,5 +1,7 @@
-const NextBtn = ({ page, setPage }) => {
-  const MAX_PAGE_LENGTH = 2;
+const NextBtn = ({ page, setPage, posts }) => {
+  const POSTS_PER_PAGE = 5;
+  const TOTAL_POSTS = posts.length;
+  const MAX_PAGE_LENGTH = 10 / POSTS_PER_PAGE;
 
   return (
     <button

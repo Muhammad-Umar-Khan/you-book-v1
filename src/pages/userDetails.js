@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 
-import { getUserDetailsRequest } from "../../services/api";
+import { getUserDetailsRequest } from "../services/api";
 
 const UsersDetails = () => {
   const navigate = useNavigate();

@@ -18,9 +18,10 @@ export const getPostComments = (postId) => {
   );
 };
 
-export const updateUser = (userId, data) => {
+export const updateUserRequest = (data) => {
+  console.log(data);
   return axios.put(
-    `https://jsonplaceholder.typicode.com/users/${userId}`,
+    `https://jsonplaceholder.typicode.com/user/${data?.id}`,
     data
   );
 };
@@ -34,7 +35,7 @@ export const createNewUser = (data) => {
 };
 
 export const deleteUserRequest = (userId) => {
-  return axios.delete(`https://jsonplaceholder.typicode.com/users/${userId}`);
+  return axios.delete(`https://jsonplaceholder.typicode.com/user/${userId}`);
 };
 
 export const getUserDetailsRequest = (userId) => {

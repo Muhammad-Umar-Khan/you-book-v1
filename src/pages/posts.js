@@ -1,8 +1,8 @@
-import PrevBtn from "../../common/buttons/PrevBtn";
+import PrevBtn from "../common/buttons/PrevBtn";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getPostComments, getPostsForUser } from "../../services/api";
-import NextBtn from "../../common/buttons/NextBtn";
+import { getPostComments, getPostsForUser } from "../services/api";
+import NextBtn from "../common/buttons/NextBtn";
 
 const DisplayCommentsComponent = ({ isCommentsLoading, comments, post }) => {
   return (
@@ -13,7 +13,6 @@ const DisplayCommentsComponent = ({ isCommentsLoading, comments, post }) => {
       ) : (
         comments.map(
           (comment) =>
-            //post.id === comment.postId can be removed as well bcz we are already checkinh it on line 91;
             post.id === comment.postId && (
               <div key={comment.id}>
                 <p>C#{comment.id}</p>
@@ -33,7 +32,7 @@ const UserPosts = () => {
   const [comments, setComments] = useState([]);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const { userId } = useParams();
 
   const toggleComments = (postId) => {
@@ -113,7 +112,7 @@ const UserPosts = () => {
           ))
         )}
         <PrevBtn page={page} setPage={setPage} />
-        <NextBtn page={page} setPage={setPage} />
+        <NextBtn page={page} setPage={setPage} posts={posts} />
       </div>
     </div>
   );

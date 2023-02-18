@@ -1,24 +1,25 @@
-import SearchFilter from "../../common/SearchFilter/Search";
-import DeleteUser from "./DeleteUser";
-import EditUser from "../../Modal/users/EditUser";
-import AddNewUser from "./AddNewUser";
+import SearchFilter from "../common/SearchFilter/Search";
+import EditUserModal from "../Modal/users/EditUserModal";
+import { deleteUserRequest } from "../services/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllUsers } from "../../services/api";
+import { getAllUsers } from "../services/api";
+import { getUserObject } from "../utils/helpers/generatorHelper";
 
 const Users = () => {
-  const navigate = useNavigate();
-  const [users, setUsers] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [title, setTitle] = useState("");
+  const [type, setType] = useState("");
+  const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
   const navigateToDetails = (id) => {
     navigate(`/users/details/${id}`);
   };
 
   const loadUsers = async () => {
-    if (window.location.pathname === "/") {
-      return navigate("/users");
-    }
     try {
       setIsLoading(true);
       const loadedUsers = await getAllUsers();
@@ -27,6 +28,31 @@ const Users = () => {
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  const deleteUser = async (id) => {
+    const usersCopy = [...users];
+    try {
+      const newUsers = usersCopy.filter((user) => user.id !== id); //no relationship with response;
+      setUsers(newUsers);
+      await deleteUserRequest(id);
+    } catch (error) {
+      setUsers(usersCopy);
+    }
+  };
+
+  const addClick = () => {
+    setShowModal(true);
+    setTitle("Add User");
+    setType("add");
+    setUser(getUserObject());
+  };
+
+  const editClick = (clickedUser) => {
+    setShowModal(true);
+    setTitle("Edit User");
+    setType("edit");
+    setUser(clickedUser);
   };
 
   useEffect(() => {
@@ -68,21 +94,30 @@ const Users = () => {
               >
                 {user.email}
               </td>
+
               <td>
-                <EditUser user={user} setUsers={setUsers} users={users} />
+                <button onClick={() => editClick(user)}>Edit</button>
               </td>
               <td>
-                <DeleteUser
-                  userId={user.id}
-                  users={users}
-                  setUsers={setUsers}
-                />
+                <button onClick={() => deleteUser(user.id)}>Delete</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <AddNewUser users={users} setUsers={setUsers} />
+
+      <button onClick={addClick}>Add +</button>
+
+      <EditUserModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        user={user}
+        setUser={setUser}
+        users={users}
+        type={type}
+        setUsers={setUsers}
+        title={title}
+      />
     </div>
   );
 };
