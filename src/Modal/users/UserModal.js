@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import Modal from "react-bootstrap/Modal";
 import { updateUserRequest, createNewUser } from "../../services/api";
-// import { INPUT_ELEMENTS } from "../../common/InputElements";
 import { getUserObject } from "../../utils/helpers/generatorHelper";
 
 function EditUser({
@@ -125,10 +124,10 @@ function EditUser({
           </label>
         </Modal.Body>
         <Modal.Footer>
-          {type === "add" ? (
-            <button onClick={addUserHandler}>Add +</button>
-          ) : (
+          {type === "edit" ? (
             <button onClick={updateUser}>Update</button>
+          ) : (
+            <button onClick={addUserHandler}>Add +</button>
           )}
           <button onClick={() => setShowModal(false)}>Cancel</button>
         </Modal.Footer>
