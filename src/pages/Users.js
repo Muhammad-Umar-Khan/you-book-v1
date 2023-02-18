@@ -1,5 +1,5 @@
 import SearchFilter from "../common/SearchFilter/Search";
-import EditUserModal from "../Modal/users/EditUserModal";
+import EditUserModal from "../Modal/users/UserModal";
 import { deleteUserRequest } from "../services/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
