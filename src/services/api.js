@@ -19,7 +19,6 @@ export const getPostComments = (postId) => {
 };
 
 export const updateUserRequest = (data) => {
-  console.log(data);
   return axios.put(
     `https://jsonplaceholder.typicode.com/user/${data?.id}`,
     data
