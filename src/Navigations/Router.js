@@ -4,17 +4,25 @@ import Users from "../pages/Users";
 import UsersDetails from "../pages/userDetails";
 import UserPosts from "../pages/posts";
 import Error from "../components/Error/Error";
+import {
+  ERROR,
+  HOME,
+  NOT_FOUND,
+  USERS,
+  USER_DETAILS,
+  USER_POSTS,
+} from "../utils/constants/routeConstants";
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/users" />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/users/details/:userId" element={<UsersDetails />}></Route>
-        <Route path="details/:userId/posts" element={<UserPosts />}></Route>
-        <Route path="/error" element={<Error />}></Route>
-        <Route path="*" element={<Navigate to="/error" />} />
+        <Route path={HOME} element={<Navigate to="/users" />} />
+        <Route path={USERS} element={<Users />} />
+        <Route path={USER_DETAILS} element={<UsersDetails />}></Route>
+        <Route path={USER_POSTS} element={<UserPosts />}></Route>
+        <Route path={ERROR} element={<Error />}></Route>
+        <Route path={NOT_FOUND} element={<Navigate to="/error" />} />
       </Routes>
     </BrowserRouter>
   );

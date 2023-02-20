@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getPostComments, getPostsForUser } from "../services/api";
 import NextBtn from "../common/buttons/NextBtn";
+import GoBack from "../common/buttons/back";
 
 const DisplayCommentsComponent = ({ isCommentsLoading, comments, post }) => {
   return (
@@ -113,6 +114,7 @@ const UserPosts = () => {
         )}
         <PrevBtn page={page} setPage={setPage} />
         <NextBtn page={page} setPage={setPage} posts={posts} />
+        <GoBack />
       </div>
     </div>
   );

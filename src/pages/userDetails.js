@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import GoBack from "../common/buttons/back";
 
 import { getUserDetailsRequest } from "../services/api";
 
@@ -14,8 +15,6 @@ const UsersDetails = () => {
   const navigateToPostsPage = () => {
     return navigate(`/details/${userId}/posts`);
   };
-
- 
 
   const loadUserDetails = useCallback(async () => {
     try {
@@ -73,6 +72,7 @@ const UsersDetails = () => {
               {details?.address?.suite},<i>City:</i> {details?.address?.city},
               <i>ZipCode:</i> {details?.address?.zipcode}
             </p>
+            <GoBack />
             <button
               className="btn btn-outline-danger"
               onClick={navigateToPostsPage}

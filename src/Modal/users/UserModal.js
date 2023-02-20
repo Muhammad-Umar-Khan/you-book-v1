@@ -27,10 +27,9 @@ function EditUser({
   const updateUser = async () => {
     setShowModal(false);
     try {
-      const user = usersCopy.find((user) => user.id === payLoad.id);
+      const userIndex = usersCopy.findIndex((user) => user.id === payLoad.id);
       const userNewData = getUserObject(payLoad);
-      const indexIs = users.indexOf(user);
-      usersCopy[indexIs] = userNewData;
+      usersCopy[userIndex] = userNewData;
       setUsers([...usersCopy]);
       await updateUserRequest(payLoad);
     } catch (error) {

@@ -1,14 +1,13 @@
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { getAllUsers, deleteUserRequest } from "../services/api";
+import { getUserObject } from "../utils/helpers/generatorHelper";
 import SearchFilter from "../common/SearchFilter/Search";
 import EditUserModal from "../Modal/users/UserModal";
-import { deleteUserRequest } from "../services/api";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getAllUsers } from "../services/api";
-import { getUserObject } from "../utils/helpers/generatorHelper";
 
 const Users = () => {
   const [showModal, setShowModal] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(getUserObject());
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
@@ -19,28 +18,6 @@ const Users = () => {
     navigate(`/users/details/${id}`);
   };
 
-  const loadUsers = async () => {
-    try {
-      setIsLoading(true);
-      const loadedUsers = await getAllUsers();
-      setIsLoading(false);
-      setUsers(loadedUsers.data);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  const deleteUser = async (id) => {
-    const usersCopy = [...users];
-    try {
-      const newUsers = usersCopy.filter((user) => user.id !== id); //no relationship with response;
-      setUsers(newUsers);
-      await deleteUserRequest(id);
-    } catch (error) {
-      setUsers(usersCopy);
-    }
-  };
-
   const addClick = () => {
     setShowModal(true);
     setTitle("Add User");
@@ -48,6 +25,14 @@ const Users = () => {
     setUser(getUserObject());
   };
 
+  const deleteUser = async (id) => {
+    try {
+      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+      await deleteUserRequest(id);
+    } catch (error) {
+      setUsers(users);
+    }
+  };
   const editClick = (clickedUser) => {
     setShowModal(true);
     setTitle("Edit User");
@@ -55,9 +40,21 @@ const Users = () => {
     setUser(clickedUser);
   };
 
+  const loadUsers = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await getAllUsers();
+      setUsers(data);
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     loadUsers();
-  }, []);
+  }, [loadUsers]);
 
   return (
     <div className="text-center mt-5">
