@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { getData } from "../../services/api";
+import { getDataRequest } from "../../services/api";
 
 const SearchFilter = ({ setUsers }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   async function loadFiltredUsers(searchTerm) {
-    let {data} = await getData(searchTerm);
+    let {data} = await getDataRequest(searchTerm);
     setUsers(data);
   }
 

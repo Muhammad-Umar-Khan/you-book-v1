@@ -5,9 +5,10 @@ import { getPostComments } from "../../services/api";
 const PostComments = () => {
   const [comments, setComments] = useState([]);
   const { postId } = useParams();
+  const validPostId = parseInt(postId)
   const loadPostComments = async () => {
     try {
-      const response = await getPostComments(postId);
+      const response = await getPostComments(validPostId);
       const { data } = response;
       setComments(data);
     } catch (error) {
@@ -17,7 +18,7 @@ const PostComments = () => {
 
   useEffect(() => {
     loadPostComments();
-  }, [postId]);
+  }, [validPostId]);
   return (
     <Fragment>
       {comments.map((comment) => (

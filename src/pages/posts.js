@@ -1,18 +1,19 @@
-import PrevBtn from "../common/buttons/PrevBtn";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getPostComments, getPostsForUser } from "../services/api";
-import NextBtn from "../common/buttons/NextBtn";
+import { postCommentsRequest, postsForUserRequest } from "../services/api";
+import { NextBtn, PrevBtn } from "../common/buttons/Pagination";
 import GoBack from "../common/buttons/back";
 
-const DisplayCommentsComponent = ({ isCommentsLoading, comments, post }) => {
+export let TOTAL_POSTS = null;
+
+const DisplayCommentsComponent = ({ comments, post }) => {
   return (
     <div className="comments">
       <h2>Comments</h2>
-      {isCommentsLoading ? (
+      {comments.loading ? (
         <p>Loading...</p>
       ) : (
-        comments.map(
+        comments.data.map(
           (comment) =>
             post.id === comment.postId && (
               <div key={comment.id}>
@@ -29,52 +30,77 @@ const DisplayCommentsComponent = ({ isCommentsLoading, comments, post }) => {
 
 const UserPosts = () => {
   const [order, setOrder] = useState("ASC");
-  const [posts, setPosts] = useState([]);
-  const [comments, setComments] = useState([]);
-  const [isPostsLoading, setIsPostsLoading] = useState(false);
-  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
+  const [posts, setPosts] = useState({
+    data: [],
+    loading: false,
+  });
+  const [comments, setComments] = useState({
+    data: [],
+    loading: false,
+  });
   const [page, setPage] = useState(1);
   const { userId } = useParams();
+  const validUserId = parseInt(userId);
 
   const toggleComments = (postId) => {
-    let newPosts = posts.map((post) =>
+    let newPosts = posts.data.map((post) =>
       post.id === postId
         ? { ...post, showComments: !post.showComments }
         : { ...post, showComments: false }
     );
-    setPosts(newPosts);
+    setPosts({
+      ...posts,
+      data: newPosts,
+    });
   };
 
   const loadPostComments = async (postId) => {
-    setIsCommentsLoading(true);
+    setComments({
+      ...comments,
+      loading: true,
+    });
     toggleComments(postId);
-    const response = await getPostComments(postId);
+    const response = await postCommentsRequest(postId);
     const { data } = response;
-    setComments(data);
-    setIsCommentsLoading(false);
+    // setComments(data);
+    setComments({
+      data: data,
+      loading: false,
+    });
+    // setloading(false);
   };
 
-  const loadPostsForUser = useCallback(async () => {
+  const loadPostsForUser = async () => {
     try {
-      setIsPostsLoading(true);
-      let response = await getPostsForUser(userId, page, order);
+      setPosts({
+        ...posts,
+        loading: true,
+      });
+      let response = await postsForUserRequest(validUserId, page, order);
+      TOTAL_POSTS = response.headers["x-total-count"];
       const { data } = response;
-      setPosts(data);
+      setPosts({
+        data: data,
+        loading: false,
+      });
 
       const mutatedPosts = data.map((post) => ({
         ...post,
         showComments: false,
       }));
-      setPosts(mutatedPosts);
-      setIsPostsLoading(false);
+      setPosts({
+        data: mutatedPosts,
+        loading: false,
+      });
+      // setIsPostsLoading(false);
     } catch (error) {
       console.log(error.message);
     }
-  }, [order, page, userId]);
+  };
 
   useEffect(() => {
     loadPostsForUser();
-  }, [userId, order, page, loadPostsForUser]);
+  }, [validUserId, order, page]);
 
   return (
     <div className="container mt-5">
@@ -87,10 +113,10 @@ const UserPosts = () => {
           Change order
         </button>
         <h2>Posts</h2>
-        {isPostsLoading ? (
+        {posts.loading ? (
           <p>Loading Posts...</p>
         ) : (
-          posts.map((post) => (
+          posts.data.map((post) => (
             <div
               className="col-md-10 offset-1 mb-3 cursor-pointer"
               key={post.id}
@@ -102,9 +128,10 @@ const UserPosts = () => {
 
               {post.showComments &&
                 // && comments[0].length > 0 can be replaced with comments[0]?.postId;
-                comments[0]?.postId === post.id && (
+                comments.data[0]?.postId === post.id && (
                   <DisplayCommentsComponent
-                    isCommentsLoading={isCommentsLoading}
+                    // loading={loading}
+                    // comments={comments}
                     comments={comments}
                     post={post}
                   />
@@ -113,7 +140,7 @@ const UserPosts = () => {
           ))
         )}
         <PrevBtn page={page} setPage={setPage} />
-        <NextBtn page={page} setPage={setPage} posts={posts} />
+        <NextBtn page={page} setPage={setPage} />
         <GoBack />
       </div>
     </div>

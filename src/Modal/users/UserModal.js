@@ -1,138 +1,117 @@
 import React, { Fragment } from "react";
 import Modal from "react-bootstrap/Modal";
-import { updateUserRequest, createNewUser } from "../../services/api";
+import { FormInput, FormInputAddressField } from "../../common/Input/FormInput";
+import { updateUserRequest, newUserRequest } from "../../services/api";
 import { getUserObject } from "../../utils/helpers/generatorHelper";
 
-function EditUser({
+const EditUser = ({
   user,
   setUser,
   showModal,
   setShowModal,
   users,
-  setUsers,
-  title,
-  type,
-}) {
-  const addUserHandler = async () => {
-    if (user.name) {
-      setShowModal(false);
-      const payLoad = getUserObject(user);
-      const response = await createNewUser(payLoad);
-      const { data } = response;
-      setUsers([...users, data]);
+  setUsers
+}) => {
+  let isPopulated = true;
+
+  for (let key in user) {
+    if (user[key] === "") {
+      isPopulated = false;
+      break;
     }
-  };
-  const payLoad = user;
-  const usersCopy = [...users];
-  const updateUser = async () => {
+  }
+
+  const editOrAdd = async () => {
     setShowModal(false);
-    try {
-      const userIndex = usersCopy.findIndex((user) => user.id === payLoad.id);
-      const userNewData = getUserObject(payLoad);
-      usersCopy[userIndex] = userNewData;
-      setUsers([...usersCopy]);
-      await updateUserRequest(payLoad);
-    } catch (error) {
-      setUsers([...users]);
+    if (isPopulated) {
+      const payLoad = user;
+      const usersCopy = [...users];
+      try {
+        const userIndex = usersCopy.findIndex((user) => user.id === payLoad.id);
+        const userNewData = getUserObject(payLoad);
+        usersCopy[userIndex] = userNewData;
+        setUsers([...usersCopy]);
+        await updateUserRequest(payLoad);
+      } catch (error) {
+        setUsers([...users]);
+      }
+    } else {
+      if (user.name) {
+        const payLoad = getUserObject(user);
+        const response = await newUserRequest(payLoad);
+        const { data } = response;
+        setUsers([...users, data]);
+      }
     }
   };
 
+  const cancel = () => {
+    showModal(false);
+    setUser({});
+  };
   return (
     <Fragment>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{title}</Modal.Title>
+          <Modal.Title>{isPopulated ? "Edit User" : "Update User"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <label className="text-start my-1">
-            Name:
-            <input
-              className="form-control"
-              value={user?.name}
-              onChange={(event) =>
-                setUser({ ...user, name: event.target.value })
-              }
-            ></input>
-          </label>
-          <label className="text-start my-1">
-            Username:
-            <input
-              className="form-control"
-              value={user?.username}
-              onChange={(event) =>
-                setUser({
-                  ...user,
-                  username: event.target.value,
-                })
-              }
-            ></input>
-          </label>
-          <label className="text-start my-1">
-            Email:
-            <input
-              className="form-control"
-              value={user?.email}
-              onChange={(event) =>
-                setUser({
-                  ...user,
-                  email: event.target.value,
-                })
-              }
-            ></input>
-          </label>
-          <label className="text-start my-1">
-            Address, Street:
-            <input
-              className="form-control"
-              value={user?.address?.street}
-              onChange={(event) =>
-                setUser({
-                  ...user,
-                  address: {
-                    ...user.address,
-                    street: event.target.value,
-                  },
-                })
-              }
-            ></input>
-            City
-            <input
-              className="form-control"
-              value={user?.address?.city}
-              onChange={(event) =>
-                setUser({
-                  ...user,
-                  address: { ...user.address, city: event.target.value },
-                })
-              }
-            ></input>
-            Suite
-            <input
-              className="form-control"
-              value={user?.address?.suite}
-              onChange={(event) =>
-                setUser({
-                  ...user,
-                  address: {
-                    ...user.address,
-                    suite: event.target.value,
-                  },
-                })
-              }
-            ></input>
-          </label>
+          <FormInput
+            user={user}
+            setUser={setUser}
+            propertyStr={"name"}
+            property={user?.name}
+          />
+          <FormInput
+            user={user}
+            setUser={setUser}
+            propertyStr={"username"}
+            property={user?.username}
+          />
+
+          <FormInput
+            user={user}
+            setUser={setUser}
+            propertyStr={"email"}
+            property={user?.email}
+          />
+          <FormInputAddressField
+            user={user}
+            setUser={setUser}
+            propertyStr={"street"}
+            property={user?.address?.street}
+          />
+          <FormInputAddressField
+            user={user}
+            setUser={setUser}
+            propertyStr={"city"}
+            property={user?.address?.city}
+          />
+
+          <FormInputAddressField
+            user={user}
+            address={user.address}
+            setUser={setUser}
+            propertyStr={"suite"}
+            property={user?.address?.suite}
+          />
         </Modal.Body>
         <Modal.Footer>
-          {type === "edit" ? (
-            <button onClick={updateUser}>Update</button>
+          {
+            <button onClick={editOrAdd}>
+              {isPopulated ? "Update" : "Add +"}
+            </button>
+          }
+          {/* {type === "edit" ? (
+            <button onClick={editOrAdd}>Update</button>
           ) : (
-            <button onClick={addUserHandler}>Add +</button>
-          )}
-          <button onClick={() => setShowModal(false)}>Cancel</button>
+            <button onClick={editOrAdd}>Add +</button>
+          )} */}
+          <button onClick={cancel}>Cancel</button>
         </Modal.Footer>
       </Modal>
     </Fragment>
   );
-}
+};
 
 export default EditUser;

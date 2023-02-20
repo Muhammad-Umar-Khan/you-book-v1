@@ -3,34 +3,35 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import GoBack from "../common/buttons/back";
 
-import { getUserDetailsRequest } from "../services/api";
+import { userDetailsRequest } from "../services/api";
 
 const UsersDetails = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
+  const validUserId = parseInt(userId);
   const [details, setDetails] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const navigateToPostsPage = () => {
-    return navigate(`/details/${userId}/posts`);
+    return navigate(`/details/${validUserId}/posts`);
   };
 
   const loadUserDetails = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await getUserDetailsRequest(userId);
+      const response = await userDetailsRequest(validUserId);
       setIsLoading(false);
       const { data } = response;
       setDetails(data);
     } catch (error) {
       setIsError(true);
     }
-  }, [userId]);
+  }, [validUserId]);
 
   useEffect(() => {
     loadUserDetails();
-  }, [userId, loadUserDetails]);
+  }, [validUserId, loadUserDetails]);
 
   if (isError) {
     return (
