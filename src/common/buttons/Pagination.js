@@ -1,4 +1,4 @@
-import { TOTAL_POSTS } from "../../pages/posts";
+import { TOTAL_POSTS } from "../../pages/Posts";
 export const NextBtn = ({ page, setPage }) => {
   const POSTS_PER_PAGE = 5;
   const MAX_PAGE_LENGTH = TOTAL_POSTS / POSTS_PER_PAGE;

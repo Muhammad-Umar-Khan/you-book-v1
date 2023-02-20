@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { postCommentsRequest, postsForUserRequest } from "../services/api";
 import { NextBtn, PrevBtn } from "../common/buttons/Pagination";
-import GoBack from "../common/buttons/back";
+import GoBack from "../common/buttons/Back";
 
 export let TOTAL_POSTS = null;
 
@@ -62,12 +62,10 @@ const UserPosts = () => {
     toggleComments(postId);
     const response = await postCommentsRequest(postId);
     const { data } = response;
-    // setComments(data);
     setComments({
       data: data,
       loading: false,
     });
-    // setloading(false);
   };
 
   const loadPostsForUser = async () => {
@@ -92,7 +90,6 @@ const UserPosts = () => {
         data: mutatedPosts,
         loading: false,
       });
-      // setIsPostsLoading(false);
     } catch (error) {
       console.log(error.message);
     }
@@ -129,12 +126,7 @@ const UserPosts = () => {
               {post.showComments &&
                 // && comments[0].length > 0 can be replaced with comments[0]?.postId;
                 comments.data[0]?.postId === post.id && (
-                  <DisplayCommentsComponent
-                    // loading={loading}
-                    // comments={comments}
-                    comments={comments}
-                    post={post}
-                  />
+                  <DisplayCommentsComponent comments={comments} post={post} />
                 )}
             </div>
           ))

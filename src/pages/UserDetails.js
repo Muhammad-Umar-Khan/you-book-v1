@@ -1,7 +1,7 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import GoBack from "../common/buttons/back";
+import GoBack from "../common/buttons/Back";
 
 import { userDetailsRequest } from "../services/api";
 
@@ -17,7 +17,7 @@ const UsersDetails = () => {
     return navigate(`/details/${validUserId}/posts`);
   };
 
-  const loadUserDetails = useCallback(async () => {
+  const loadUserDetails = async () => {
     try {
       setIsLoading(true);
       const response = await userDetailsRequest(validUserId);
@@ -27,11 +27,15 @@ const UsersDetails = () => {
     } catch (error) {
       setIsError(true);
     }
-  }, [validUserId]);
+  };
+
+  const tryAgain = () => {
+    return navigate(0);
+  }
 
   useEffect(() => {
     loadUserDetails();
-  }, [validUserId, loadUserDetails]);
+  }, [validUserId]);
 
   if (isError) {
     return (
@@ -43,7 +47,7 @@ const UsersDetails = () => {
         >
           {toast("Error loading details")}
         </ToastContainer>
-        <a href={window.location.href}>Try Again</a>
+        <a href={tryAgain}>Try Again</a>
       </Fragment>
     );
   }
