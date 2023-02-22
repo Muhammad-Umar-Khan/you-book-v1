@@ -1,40 +1,45 @@
-export const FormInput = ({ user, setUser, property, propertyStr }) => {
-  return (
-    <label className="text-start my-1">
-      {propertyStr}
-      <input
-        className="form-control"
-        value={property}
-        onChange={(event) =>
-          setUser({ ...user, [propertyStr]: event.target.value })
-        }
-      ></input>
-    </label>
-  );
-};
+import { useState } from "react";
 
-export const FormInputAddressField = ({
+export const FormInput = ({
   user,
   setUser,
-  property,
-  propertyStr,
+  value,
+  label,
+  name,
+  errorMessage,
+  required,
 }) => {
+  const [isValid, setIsValid] = useState(true);
+
+  const handleChange = (event) => {
+    setUser({
+      ...user,
+      [name]: event.target.value,
+      address: {
+        ...user.address,
+        [name]: event.target.value,
+      },
+    });
+    setIsValid(true);
+  };
+
+  const handleBlur = () => {
+    if (required && value.trim() === "") {
+      setIsValid(false);
+    }
+  };
+
   return (
     <label className="text-start my-1">
-      {propertyStr}
+      {label}
       <input
         className="form-control"
-        value={property}
-        onChange={(event) =>
-          setUser({
-            ...user,
-            address: {
-              ...user.address,
-              [propertyStr]: event.target.value,
-            },
-          })
-        }
+        value={value}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        required={required}
       />
+      {!isValid && <p className="text-danger">{errorMessage}</p>}
     </label>
   );
 };

@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Users from "../pages/Users";
 import UsersDetails from "../pages/UserDetails";
 import UserPosts from "../pages/Posts";
-import Error from "../components/Error/Error";
+import Error from "../components/Errors/NotFound";
 import {
   HOME,
   NOT_FOUND,

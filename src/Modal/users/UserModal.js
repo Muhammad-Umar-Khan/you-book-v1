@@ -1,8 +1,10 @@
 import React, { Fragment } from "react";
 import Modal from "react-bootstrap/Modal";
-import { FormInput, FormInputAddressField } from "../../common/Input/FormInput";
-import { updateUserRequest, newUserRequest } from "../../services/api";
+import { FormInput } from "../../common/Input/FormInput";
+import { updateUser, newUser } from "../../services/api";
 import { getUserObject } from "../../utils/helpers/generatorHelper";
+import { inputsArray } from "../../common/inputsArray";
+
 
 const EditUser = ({
   user,
@@ -10,104 +12,97 @@ const EditUser = ({
   showModal,
   setShowModal,
   users,
-  setUsers
+  setUsers,
 }) => {
   let isPopulated = true;
-
   for (let key in user) {
     if (user[key] === "") {
       isPopulated = false;
       break;
     }
   }
-
   const editOrAdd = async () => {
-    setShowModal(false);
-    if (isPopulated) {
-      const payLoad = user;
-      const usersCopy = [...users];
-      try {
-        const userIndex = usersCopy.findIndex((user) => user.id === payLoad.id);
-        const userNewData = getUserObject(payLoad);
-        usersCopy[userIndex] = userNewData;
-        setUsers([...usersCopy]);
-        await updateUserRequest(payLoad);
-      } catch (error) {
-        setUsers([...users]);
-      }
-    } else {
-      if (user.name) {
-        const payLoad = getUserObject(user);
-        const response = await newUserRequest(payLoad);
-        const { data } = response;
+    if (handleSubmit()) {
+      setShowModal(false);
+      if (isPopulated) {
+        const usersCopy = [...users];
+        try {
+          const userIndex = usersCopy.findIndex(
+            (userFind) => userFind.id === user.id
+          );
+          const userNewData = getUserObject(user);
+          usersCopy[userIndex] = userNewData;
+          setUsers([...usersCopy]);
+          await updateUser(user);
+        } catch (error) {
+          setUsers([...users]);
+        }
+      } else {
+        const { data } = await newUser(getUserObject(user));
         setUsers([...users, data]);
       }
     }
   };
 
-  const cancel = () => {
-    showModal(false);
-    setUser({});
+  const handleCancel = () => {
+    setShowModal(false);
+    setUser(getUserObject());
   };
+
+  const handleSubmit = () => {
+    return user.name !== "" && user.username !== "";
+  };
+
   return (
     <Fragment>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{isPopulated ? "Edit User" : "Update User"}</Modal.Title>
+          <Modal.Title>{isPopulated ? "Edit User" : "Add User"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <FormInput
-            user={user}
-            setUser={setUser}
-            propertyStr={"name"}
-            property={user?.name}
-          />
-          <FormInput
-            user={user}
-            setUser={setUser}
-            propertyStr={"username"}
-            property={user?.username}
-          />
-
-          <FormInput
-            user={user}
-            setUser={setUser}
-            propertyStr={"email"}
-            property={user?.email}
-          />
-          <FormInputAddressField
-            user={user}
-            setUser={setUser}
-            propertyStr={"street"}
-            property={user?.address?.street}
-          />
-          <FormInputAddressField
-            user={user}
-            setUser={setUser}
-            propertyStr={"city"}
-            property={user?.address?.city}
-          />
-
-          <FormInputAddressField
-            user={user}
-            address={user.address}
-            setUser={setUser}
-            propertyStr={"suite"}
-            property={user?.address?.suite}
-          />
+          <form onSubmit={handleSubmit}>
+            {inputsArray.map((input) => (
+              <Fragment key={input.id}>
+                {input.address ? (
+                  <Fragment>
+                    <FormInput
+                      {...input.address.street}
+                      user={user}
+                      setUser={setUser}
+                      value={user?.address?.street}
+                    />
+                    <FormInput
+                      {...input.address.suite}
+                      user={user}
+                      setUser={setUser}
+                      value={user?.address?.suite}
+                    />
+                    <FormInput
+                      {...input.address.city}
+                      user={user}
+                      setUser={setUser}
+                      value={user?.address?.city}
+                    />
+                  </Fragment>
+                ) : (
+                  <FormInput
+                    {...input}
+                    user={user}
+                    setUser={setUser}
+                    value={user[input.name]}
+                  />
+                )}
+              </Fragment>
+            ))}
+          </form>
         </Modal.Body>
         <Modal.Footer>
           {
-            <button onClick={editOrAdd}>
+            <button onClick={editOrAdd} type="submit">
               {isPopulated ? "Update" : "Add +"}
             </button>
           }
-          {/* {type === "edit" ? (
-            <button onClick={editOrAdd}>Update</button>
-          ) : (
-            <button onClick={editOrAdd}>Add +</button>
-          )} */}
-          <button onClick={cancel}>Cancel</button>
+          <button onClick={handleCancel}>Cancel</button>
         </Modal.Footer>
       </Modal>
     </Fragment>

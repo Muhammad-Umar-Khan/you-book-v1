@@ -2,7 +2,7 @@ import SearchFilter from "../common/SearchFilter/Search";
 import EditUserModal from "../Modal/users/UserModal";
 import Table from "../common/Table";
 import { useState, useEffect, useCallback } from "react";
-import { allUsersRequest } from "../services/api";
+import { allUsers } from "../services/api";
 import { getUserObject } from "../utils/helpers/generatorHelper";
 
 const Users = () => {
@@ -19,7 +19,7 @@ const Users = () => {
   const loadUsers = useCallback(async () => {
     try {
       setIsLoading(true);
-      const { data } = await allUsersRequest();
+      const { data } = await allUsers();
       setUsers(data);
     } catch (error) {
       console.log(error.message);

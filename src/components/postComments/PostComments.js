@@ -5,7 +5,7 @@ import { getPostComments } from "../../services/api";
 const PostComments = () => {
   const [comments, setComments] = useState([]);
   const { postId } = useParams();
-  const validPostId = parseInt(postId)
+  const validPostId = parseInt(postId);
   const loadPostComments = async () => {
     try {
       const response = await getPostComments(validPostId);

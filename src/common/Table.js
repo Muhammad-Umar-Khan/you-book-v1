@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { deleteUserRequest } from "../services/api";
+import { deleteUser } from "../services/api";
 
 const Table = ({
   users,
@@ -14,10 +14,10 @@ const Table = ({
     navigate(`/users/details/${id}`);
   };
 
-  const deleteUser = async (id) => {
+  const handleDeleteUser = async (id) => {
     try {
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
-      await deleteUserRequest(id);
+      await deleteUser(id);
     } catch (error) {
       setUsers(users);
     }
@@ -66,7 +66,7 @@ const Table = ({
               <button onClick={() => editClick(user)}>Edit</button>
             </td>
             <td>
-              <button onClick={() => deleteUser(user.id)}>Delete</button>
+              <button onClick={() => handleDeleteUser(user.id)}>Delete</button>
             </td>
           </tr>
         ))}

@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { getDataRequest } from "../../services/api";
+import { getData } from "../../services/api";
 
 const SearchFilter = ({ setUsers }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [search, setSearch] = useState("");
 
-  async function loadFiltredUsers(searchTerm) {
-    let {data} = await getDataRequest(searchTerm);
+  async function loadFiltredUsers(search) {
+    let {data} = await getData(search);
     setUsers(data);
   }
 
@@ -22,15 +22,15 @@ const SearchFilter = ({ setUsers }) => {
   const debounce = useCallback(debounced(loadFiltredUsers, 300), []);
 
   useEffect(() => {
-    debounce(searchTerm);
-  }, [searchTerm]);
+    debounce(search);
+  }, [search]);
 
   return (
     <input
       type="text"
       placeholder="Search"
-      onChange={(event) => setSearchTerm(event?.target?.value)}
-      value={searchTerm}
+      onChange={(event) => setSearch(event?.target?.value)}
+      value={search}
     />
   );
 };

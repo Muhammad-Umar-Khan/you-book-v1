@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { postCommentsRequest, postsForUserRequest } from "../services/api";
-import { NextBtn, PrevBtn } from "../common/buttons/Pagination";
-import GoBack from "../common/buttons/Back";
+import { postComments, postsForUser } from "../services/api";
+// import { NextBtn, PrevBtn } from "../common/buttons/Pagination";
+import BackBtn from "../common/buttons/BackBtn";
+import Pagination from "../common/buttons/Pagination";
 
 export let TOTAL_POSTS = null;
 
@@ -60,8 +61,7 @@ const UserPosts = () => {
       loading: true,
     });
     toggleComments(postId);
-    const response = await postCommentsRequest(postId);
-    const { data } = response;
+    const { data } = await postComments(postId);
     setComments({
       data: data,
       loading: false,
@@ -74,7 +74,7 @@ const UserPosts = () => {
         ...posts,
         loading: true,
       });
-      let response = await postsForUserRequest(validUserId, page, order);
+      let response = await postsForUser(validUserId, page, order);
       TOTAL_POSTS = response.headers["x-total-count"];
       const { data } = response;
       setPosts({
@@ -98,6 +98,10 @@ const UserPosts = () => {
   useEffect(() => {
     loadPostsForUser();
   }, [validUserId, order, page]);
+
+  const POSTS_PER_PAGE = 5;
+
+  const TOTAL_PAGES = TOTAL_POSTS / POSTS_PER_PAGE;
 
   return (
     <div className="container mt-5">
@@ -123,17 +127,30 @@ const UserPosts = () => {
               <strong>{post.title}</strong>
               <p>{post.body}</p>
 
-              {post.showComments &&
-                // && comments[0].length > 0 can be replaced with comments[0]?.postId;
-                comments.data[0]?.postId === post.id && (
-                  <DisplayCommentsComponent comments={comments} post={post} />
-                )}
+              {post.showComments && comments.data[0]?.postId === post.id && (
+                <DisplayCommentsComponent comments={comments} post={post} />
+              )}
             </div>
           ))
         )}
-        <PrevBtn page={page} setPage={setPage} />
-        <NextBtn page={page} setPage={setPage} />
-        <GoBack />
+        <div className="row">
+          <div className="col-md-8 offset-2">
+            <Pagination
+              page={page}
+              setPage={() => setPage((prevState) => prevState - 1)}
+              title="Prev"
+              disabled={page <= 1}
+            />
+            <Pagination
+              page={page}
+              setPage={() => setPage((prevState) => prevState + 1)}
+              title="Next"
+              disabled={page >= TOTAL_PAGES}
+            />
+          </div>
+        </div>
+
+        <BackBtn title={"Back"} />
       </div>
     </div>
   );

@@ -1,43 +1,55 @@
 import { Fragment, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, generatePath } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import GoBack from "../common/buttons/Back";
+import { USER_POSTS } from "../../src/utils/constants/routeConstants";
+import GoBack from "../common/buttons/BackBtn";
+import DetailField from "../common/DetailField";
 
-import { userDetailsRequest } from "../services/api";
+import { userDetails } from "../services/api";
 
 const UsersDetails = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const validUserId = parseInt(userId);
-  const [details, setDetails] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [details, setDetails] = useState({
+    data: {},
+    isLoading: false,
+    isError: false,
+  });
 
   const navigateToPostsPage = () => {
-    return navigate(`/details/${validUserId}/posts`);
+    return navigate(generatePath(USER_POSTS, { userId: validUserId }));
   };
 
   const loadUserDetails = async () => {
     try {
-      setIsLoading(true);
-      const response = await userDetailsRequest(validUserId);
-      setIsLoading(false);
-      const { data } = response;
-      setDetails(data);
+      setDetails({
+        ...details,
+        isLoading: true,
+      });
+      const { data } = await userDetails(validUserId);
+      setDetails({
+        ...details,
+        data,
+        isLoading: false,
+      });
     } catch (error) {
-      setIsError(true);
+      setDetails({
+        ...details,
+        isError: true,
+      });
     }
   };
 
   const tryAgain = () => {
     return navigate(0);
-  }
+  };
 
   useEffect(() => {
     loadUserDetails();
   }, [validUserId]);
 
-  if (isError) {
+  if (details.isError) {
     return (
       <Fragment>
         <ToastContainer
@@ -54,30 +66,25 @@ const UsersDetails = () => {
   return (
     <Fragment>
       <div className="text-center mt-5">
-        {isLoading ? (
+        {details.isLoading ? (
           <p>Loading...</p>
         ) : (
-          <div key={details?.id}>
-            <h1>All about: {details?.username}</h1>
-            <p>
-              <strong>Name:</strong> {details?.name}
-            </p>
-            <p>
-              <strong>Username:</strong> {details?.username}
-            </p>
-            <p>
-              <strong>Email:</strong> {details?.email}
-            </p>
-
+          <div key={details?.data?.id}>
+            <h1>All about: {details?.data?.username}</h1>
+            <DetailField label="Name" name={details?.data?.name} />
+            <DetailField label="UserName" name={details?.data?.username} />
+            <DetailField label="Email" name={details?.data?.email} />
             <p>
               <strong>Address</strong>
             </p>
-            <p>
-              <i>Street:</i> {details?.address?.street},<i>Suite:</i>
-              {details?.address?.suite},<i>City:</i> {details?.address?.city},
-              <i>ZipCode:</i> {details?.address?.zipcode}
-            </p>
-            <GoBack />
+            <DetailField label="Street" name={details?.data?.address?.street} />
+            <DetailField label="Suite" name={details?.data?.address?.suite} />
+            <DetailField label="City" name={details?.data?.address?.city} />
+            <DetailField
+              label="ZipCode"
+              name={details?.data?.address?.zipcode}
+            />
+            <GoBack title="Go Back" />
             <button
               className="btn btn-outline-danger"
               onClick={navigateToPostsPage}
