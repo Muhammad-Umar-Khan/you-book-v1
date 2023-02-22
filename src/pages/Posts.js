@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { postComments, postsForUser } from "../services/api";
-// import { NextBtn, PrevBtn } from "../common/buttons/Pagination";
 import BackBtn from "../common/buttons/BackBtn";
 import Pagination from "../common/buttons/Pagination";
 
@@ -16,11 +15,11 @@ const DisplayCommentsComponent = ({ comments, post }) => {
       ) : (
         comments.data.map(
           (comment) =>
-            post.id === comment.postId && (
-              <div key={comment.id}>
-                <p>C#{comment.id}</p>
-                <strong>{comment.name}</strong>
-                <p>{comment.body}</p>
+            post.id === comment?.postId && (
+              <div key={comment?.id}>
+                <p>C#{comment?.id}</p>
+                <strong>{comment?.name}</strong>
+                <p>{comment?.body}</p>
               </div>
             )
         )
@@ -44,9 +43,9 @@ const UserPosts = () => {
   const validUserId = parseInt(userId);
 
   const toggleComments = (postId) => {
-    let newPosts = posts.data.map((post) =>
+    let newPosts = posts?.data?.map((post) =>
       post.id === postId
-        ? { ...post, showComments: !post.showComments }
+        ? { ...post, showComments: !post?.showComments }
         : { ...post, showComments: false }
     );
     setPosts({
@@ -82,7 +81,7 @@ const UserPosts = () => {
         loading: false,
       });
 
-      const mutatedPosts = data.map((post) => ({
+      const mutatedPosts = data?.map((post) => ({
         ...post,
         showComments: false,
       }));
@@ -91,7 +90,7 @@ const UserPosts = () => {
         loading: false,
       });
     } catch (error) {
-      console.log(error.message);
+      console.log(error?.message);
     }
   };
 
@@ -123,11 +122,11 @@ const UserPosts = () => {
               key={post.id}
               onClick={() => loadPostComments(post.id)}
             >
-              <p>P#{post.id}</p>
-              <strong>{post.title}</strong>
-              <p>{post.body}</p>
+              <p>P#{post?.id}</p>
+              <strong>{post?.title}</strong>
+              <p>{post?.body}</p>
 
-              {post.showComments && comments.data[0]?.postId === post.id && (
+              {post?.showComments && comments?.data[0]?.postId === post?.id && (
                 <DisplayCommentsComponent comments={comments} post={post} />
               )}
             </div>

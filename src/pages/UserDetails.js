@@ -6,11 +6,13 @@ import GoBack from "../common/buttons/BackBtn";
 import DetailField from "../common/DetailField";
 
 import { userDetails } from "../services/api";
+import Redirect from "../utils/helpers/Redirect";
+import { validator } from "../utils/helpers/validator";
 
 const UsersDetails = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
-  const validUserId = parseInt(userId);
+  validator(userId);
   const [details, setDetails] = useState({
     data: {},
     isLoading: false,
@@ -18,7 +20,7 @@ const UsersDetails = () => {
   });
 
   const navigateToPostsPage = () => {
-    return navigate(generatePath(USER_POSTS, { userId: validUserId }));
+    return navigate(generatePath(USER_POSTS, { userId }));
   };
 
   const loadUserDetails = async () => {
@@ -27,7 +29,7 @@ const UsersDetails = () => {
         ...details,
         isLoading: true,
       });
-      const { data } = await userDetails(validUserId);
+      const { data } = await userDetails(userId);
       setDetails({
         ...details,
         data,
@@ -47,11 +49,12 @@ const UsersDetails = () => {
 
   useEffect(() => {
     loadUserDetails();
-  }, [validUserId]);
+  }, [userId]);
 
   if (details.isError) {
     return (
       <Fragment>
+        <Redirect />
         <ToastContainer
           closeOnClick={true}
           position={"bottom-center"}
@@ -59,7 +62,7 @@ const UsersDetails = () => {
         >
           {toast("Error loading details")}
         </ToastContainer>
-        <a href={tryAgain}>Try Again</a>
+        <a href={`#${tryAgain}`}>Try Again</a>
       </Fragment>
     );
   }

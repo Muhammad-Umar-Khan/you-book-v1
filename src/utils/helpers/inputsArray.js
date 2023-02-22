@@ -5,7 +5,6 @@ export const inputsArray = [
     type: "text",
     placeholder: "name",
     label: "Name",
-    errorMessage: "Name is required",
     required: true,
   },
   {
@@ -14,7 +13,6 @@ export const inputsArray = [
     type: "text",
     placeholder: "username",
     label: "Username",
-    errorMessage: "Username is required",
     required: true,
   },
   {
@@ -23,7 +21,6 @@ export const inputsArray = [
     type: "email",
     placeholder: "email",
     label: "Email",
-    errorMessage: "Email is required",
     required: true,
   },
   {
@@ -35,7 +32,6 @@ export const inputsArray = [
         type: "text",
         placeholder: "City",
         label: "City",
-        errorMessage: "City is required",
         required: true,
       },
       suite: {
@@ -44,7 +40,6 @@ export const inputsArray = [
         type: "text",
         placeholder: "Suite",
         label: "Suite",
-        errorMessage: "Suite is required",
         required: true,
       },
       city: {
@@ -53,9 +48,17 @@ export const inputsArray = [
         type: "text",
         placeholder: "City",
         label: "City",
-        errorMessage: "City is required",
         required: true,
       },
     },
   },
 ];
+
+export const errorMessages = {
+  name: "Name is required",
+  username: "Username is required",
+  email: "Email is required",
+  street: "Street is required",
+  suite: "Suite is required",
+  city: "City is required",
+};

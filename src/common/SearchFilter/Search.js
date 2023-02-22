@@ -1,11 +1,22 @@
 import { useCallback, useEffect, useState } from "react";
 import { getData } from "../../services/api";
+import styled from "styled-components";
+
+const Input = styled.input`
+  padding: 5px;
+  border: 2px solid blue;
+  height: 40px;
+  border-radius: 10px;
+  &:focus {
+    outline: none;
+  }
+`;
 
 const SearchFilter = ({ setUsers }) => {
   const [search, setSearch] = useState("");
 
   async function loadFiltredUsers(search) {
-    let {data} = await getData(search);
+    let { data } = await getData(search);
     setUsers(data);
   }
 
@@ -26,12 +37,14 @@ const SearchFilter = ({ setUsers }) => {
   }, [search]);
 
   return (
-    <input
-      type="text"
-      placeholder="Search"
-      onChange={(event) => setSearch(event?.target?.value)}
-      value={search}
-    />
+    <div className="search">
+      <Input
+        type="text"
+        placeholder="Search"
+        onChange={(event) => setSearch(event?.target?.value)}
+        value={search}
+      />
+    </div>
   );
 };
 

@@ -1,32 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import { deleteUser } from "../services/api";
+import { generatePath, useNavigate } from "react-router-dom";
+import { USER_DETAILS } from "../utils/constants/routeConstants";
 
-const Table = ({
-  users,
-  setUsers,
-  setShowModal,
-
-  setUser,
-}) => {
+const Table = ({ data, onDeleteUser, onEditClick }) => {
   const navigate = useNavigate();
 
   const navigateToDetails = (id) => {
-    navigate(`/users/details/${id}`);
-  };
-
-  const handleDeleteUser = async (id) => {
-    try {
-      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
-      await deleteUser(id);
-    } catch (error) {
-      setUsers(users);
-    }
-  };
-
-  const editClick = (clickedUser) => {
-    setShowModal(true);
-
-    setUser(clickedUser);
+    navigate(generatePath(USER_DETAILS, { userId: id }));
   };
 
   return (
@@ -41,32 +20,32 @@ const Table = ({
         </tr>
       </thead>
       <tbody>
-        {users.map((user) => (
-          <tr key={user.id}>
+        {data?.map((element) => (
+          <tr key={element?.id}>
             <td
-              onClick={() => navigateToDetails(user.id)}
+              onClick={() => navigateToDetails(element.id)}
               className="cursor-pointer"
             >
-              {user.id}
+              {element?.id}
             </td>
             <td
-              onClick={() => navigateToDetails(user.id)}
+              onClick={() => navigateToDetails(element.id)}
               className="cursor-pointer"
             >
-              {user.name}
+              {element?.name}
             </td>
             <td
-              onClick={() => navigateToDetails(user.id)}
+              onClick={() => navigateToDetails(element.id)}
               className="cursor-pointer"
             >
-              {user.email}
+              {element?.email}
             </td>
 
             <td>
-              <button onClick={() => editClick(user)}>Edit</button>
+              <button onClick={() => onEditClick(element)}>Edit</button>
             </td>
             <td>
-              <button onClick={() => handleDeleteUser(user.id)}>Delete</button>
+              <button onClick={() => onDeleteUser(element?.id)}>Delete</button>
             </td>
           </tr>
         ))}

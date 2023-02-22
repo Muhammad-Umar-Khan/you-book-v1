@@ -1,58 +1,18 @@
 import React, { Fragment } from "react";
 import Modal from "react-bootstrap/Modal";
 import { FormInput } from "../../common/Input/FormInput";
-import { updateUser, newUser } from "../../services/api";
-import { getUserObject } from "../../utils/helpers/generatorHelper";
-import { inputsArray } from "../../common/inputsArray";
-
+import { inputsArray, errorMessages } from "../../utils/helpers/inputsArray";
 
 const EditUser = ({
   user,
   setUser,
   showModal,
   setShowModal,
-  users,
-  setUsers,
+  onAddOrEditClick,
+  onCancelClick,
+  onSubmitClick,
+  isPopulated,
 }) => {
-  let isPopulated = true;
-  for (let key in user) {
-    if (user[key] === "") {
-      isPopulated = false;
-      break;
-    }
-  }
-  const editOrAdd = async () => {
-    if (handleSubmit()) {
-      setShowModal(false);
-      if (isPopulated) {
-        const usersCopy = [...users];
-        try {
-          const userIndex = usersCopy.findIndex(
-            (userFind) => userFind.id === user.id
-          );
-          const userNewData = getUserObject(user);
-          usersCopy[userIndex] = userNewData;
-          setUsers([...usersCopy]);
-          await updateUser(user);
-        } catch (error) {
-          setUsers([...users]);
-        }
-      } else {
-        const { data } = await newUser(getUserObject(user));
-        setUsers([...users, data]);
-      }
-    }
-  };
-
-  const handleCancel = () => {
-    setShowModal(false);
-    setUser(getUserObject());
-  };
-
-  const handleSubmit = () => {
-    return user.name !== "" && user.username !== "";
-  };
-
   return (
     <Fragment>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -60,28 +20,31 @@ const EditUser = ({
           <Modal.Title>{isPopulated ? "Edit User" : "Add User"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={handleSubmit}>
-            {inputsArray.map((input) => (
-              <Fragment key={input.id}>
+          <form>
+            {inputsArray?.map((input) => (
+              <Fragment key={input?.id}>
                 {input.address ? (
                   <Fragment>
                     <FormInput
-                      {...input.address.street}
+                      {...input?.address?.street}
                       user={user}
                       setUser={setUser}
                       value={user?.address?.street}
+                      errorMessage={errorMessages?.street}
                     />
                     <FormInput
-                      {...input.address.suite}
+                      {...input?.address?.suite}
                       user={user}
                       setUser={setUser}
                       value={user?.address?.suite}
+                      errorMessage={errorMessages?.suite}
                     />
                     <FormInput
-                      {...input.address.city}
+                      {...input?.address?.city}
                       user={user}
                       setUser={setUser}
                       value={user?.address?.city}
+                      errorMessage={errorMessages?.city}
                     />
                   </Fragment>
                 ) : (
@@ -89,7 +52,8 @@ const EditUser = ({
                     {...input}
                     user={user}
                     setUser={setUser}
-                    value={user[input.name]}
+                    value={user[input?.name]}
+                    errorMessage={errorMessages?.[input?.name]}
                   />
                 )}
               </Fragment>
@@ -98,11 +62,11 @@ const EditUser = ({
         </Modal.Body>
         <Modal.Footer>
           {
-            <button onClick={editOrAdd} type="submit">
+            <button onClick={onAddOrEditClick}>
               {isPopulated ? "Update" : "Add +"}
             </button>
           }
-          <button onClick={handleCancel}>Cancel</button>
+          <button onClick={onCancelClick}>Cancel</button>
         </Modal.Footer>
       </Modal>
     </Fragment>
