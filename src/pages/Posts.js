@@ -93,14 +93,28 @@ const UserPosts = () => {
       console.log(error?.message);
     }
   };
+  const POSTS_PER_PAGE = 5;
+
+  const TOTAL_PAGES = TOTAL_POSTS / POSTS_PER_PAGE;
+
+  const paginationData = [
+    {
+      id: 1,
+      title: "Prev",
+      disabled: page <= 1,
+      setPage: () => setPage((prevState) => prevState - 1),
+    },
+    {
+      id: 2,
+      title: "Next",
+      disabled: page >= TOTAL_PAGES,
+      setPage: () => setPage((prevState) => prevState + 1),
+    },
+  ];
 
   useEffect(() => {
     loadPostsForUser();
   }, [validUserId, order, page]);
-
-  const POSTS_PER_PAGE = 5;
-
-  const TOTAL_PAGES = TOTAL_POSTS / POSTS_PER_PAGE;
 
   return (
     <div className="container mt-5">
@@ -116,11 +130,11 @@ const UserPosts = () => {
         {posts.loading ? (
           <p>Loading Posts...</p>
         ) : (
-          posts.data.map((post) => (
+          posts?.data?.map((post) => (
             <div
               className="col-md-10 offset-1 mb-3 cursor-pointer"
               key={post.id}
-              onClick={() => loadPostComments(post.id)}
+              onClick={() => loadPostComments(post?.id)}
             >
               <p>P#{post?.id}</p>
               <strong>{post?.title}</strong>
@@ -132,20 +146,21 @@ const UserPosts = () => {
             </div>
           ))
         )}
+
         <div className="row">
           <div className="col-md-8 offset-2">
-            <Pagination
-              page={page}
-              setPage={() => setPage((prevState) => prevState - 1)}
-              title="Prev"
-              disabled={page <= 1}
-            />
-            <Pagination
-              page={page}
-              setPage={() => setPage((prevState) => prevState + 1)}
-              title="Next"
-              disabled={page >= TOTAL_PAGES}
-            />
+            {paginationData?.map(
+              (
+                { id, title, disabled, setPage } // destructuring values on the runtime.
+              ) => (
+                <Pagination
+                  key={id}
+                  title={title}
+                  disabled={disabled}
+                  setPage={setPage}
+                />
+              )
+            )}
           </div>
         </div>
 

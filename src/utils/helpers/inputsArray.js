@@ -28,15 +28,15 @@ export const inputsArray = [
     address: {
       street: {
         id: 1,
-        name: "street",
+        name: "address.street",
         type: "text",
         placeholder: "City",
-        label: "City",
+        label: "Street",
         required: true,
       },
       suite: {
         id: 2,
-        name: "suite",
+        name: "address.suite",
         type: "text",
         placeholder: "Suite",
         label: "Suite",
@@ -44,7 +44,7 @@ export const inputsArray = [
       },
       city: {
         id: 3,
-        name: "city",
+        name: "address.city",
         type: "text",
         placeholder: "City",
         label: "City",
@@ -53,12 +53,3 @@ export const inputsArray = [
     },
   },
 ];
-
-export const errorMessages = {
-  name: "Name is required",
-  username: "Username is required",
-  email: "Email is required",
-  street: "Street is required",
-  suite: "Suite is required",
-  city: "City is required",
-};

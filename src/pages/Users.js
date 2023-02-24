@@ -1,10 +1,12 @@
+import * as Yup from "yup";
 import SearchFilter from "../common/SearchFilter/Search";
-import EditUserModal from "../Modal/users/UserModal";
+import UserModal from "../Modal/users/UserModal";
 import Table from "../common/Table";
 import { useState, useEffect, useCallback } from "react";
 import { allUsers, deleteUser, updateUser, newUser } from "../services/api";
 import { getUserObject } from "../utils/helpers/generatorHelper";
 import { handleUpdateUser } from "../utils/helpers/updateUser";
+import { useFormik } from "formik";
 
 const Users = () => {
   const [showModal, setShowModal] = useState(false);
@@ -12,15 +14,44 @@ const Users = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
 
+  const initialValues = {
+    id: user?.id ?? "",
+    name: user?.name ?? "",
+    username: user?.username ?? "",
+    email: user?.email ?? "",
+    address: {
+      street: user?.address?.street ?? "",
+      suite: user?.address?.suite ?? "",
+      city: user?.address?.city ?? "",
+    },
+  };
+
+  const validationSchema = Yup.object({
+    id: Yup.number().required(),
+    name: Yup.string().required("*Required"),
+    username: Yup.string().required("*Required"),
+    email: Yup.string().email().required("*Required"),
+    address: Yup.object({
+      street: Yup.string().required("*Required"),
+      suite: Yup.string().required("*Required"),
+      city: Yup.string().required("*Required"),
+    }),
+  });
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema: validationSchema,
+  });
+
   let isPopulated = true;
 
-  if (!user?.id) {
+  if (!formik?.values?.id) {
     isPopulated = false;
   }
 
   const handleAddClick = () => {
     setShowModal(true);
-    setUser(getUserObject());
+    formik.setValues(getUserObject());
   };
 
   const handleLoadUsers = useCallback(async () => {
@@ -37,7 +68,7 @@ const Users = () => {
 
   const handleEditClick = (clickedUser) => {
     setShowModal(true);
-    setUser(clickedUser);
+    formik.setValues(clickedUser);
   };
 
   const handleDeleteUser = async (id) => {
@@ -54,27 +85,22 @@ const Users = () => {
     setUser(getUserObject());
   };
 
-  const handleSubmit = () => {
-    return user?.name !== "" && user?.username !== "";
-  };
+  const handleEditOrAdd = async (user) => {
+    setShowModal(false);
+    if (isPopulated) {
+      try {
+        const usersCopy = handleUpdateUser(users, user);
+        setUsers([...usersCopy]);
 
-  const handleEditOrAdd = async () => {
-    const canBeSuubmitted = handleSubmit();
-    if (canBeSuubmitted) {
-      setShowModal(false);
-      if (isPopulated) {
-        try {
-          const usersCopy = handleUpdateUser(users, user);
-          setUsers([...usersCopy]);
-          await updateUser(user);
-        } catch (error) {
-          setUsers([...users]);
-        }
-      } else {
-        const { data } = await newUser(getUserObject(user));
-        setUsers([...users, data]);
+        await updateUser(user);
+      } catch (error) {
+        setUsers([...users]);
       }
+    } else {
+      const { data } = await newUser(getUserObject(user));
+      setUsers([...users, data]);
     }
+    // }
   };
 
   useEffect(() => {
@@ -96,7 +122,7 @@ const Users = () => {
 
       <button onClick={handleAddClick}>Add +</button>
 
-      <EditUserModal
+      <UserModal
         showModal={showModal}
         setShowModal={setShowModal}
         user={user}
@@ -105,7 +131,7 @@ const Users = () => {
         setUsers={setUsers}
         onAddOrEditClick={handleEditOrAdd}
         onCancelClick={handleCancel}
-        onSubmitClick={handleSubmit}
+        formik={formik}
         isPopulated={isPopulated}
       />
     </div>
