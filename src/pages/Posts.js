@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { postComments, postsForUser } from "../services/api";
+import { ASC, DESC } from "../../src/utils/constants/generalConstants";
 import BackBtn from "../common/buttons/BackBtn";
 import Pagination from "../common/buttons/Pagination";
 
@@ -13,7 +14,7 @@ const DisplayCommentsComponent = ({ comments, post }) => {
       {comments.loading ? (
         <p>Loading...</p>
       ) : (
-        comments.data.map(
+        comments?.data?.map(
           (comment) =>
             post.id === comment?.postId && (
               <div key={comment?.id}>
@@ -29,7 +30,7 @@ const DisplayCommentsComponent = ({ comments, post }) => {
 };
 
 const UserPosts = () => {
-  const [order, setOrder] = useState("ASC");
+  const [order, setOrder] = useState(ASC);
   const [posts, setPosts] = useState({
     data: [],
     loading: false,
@@ -121,7 +122,7 @@ const UserPosts = () => {
       <div className="row">
         <button
           onClick={() =>
-            setOrder((prevState) => (prevState === "ASC" ? "DESC" : "ASC"))
+            setOrder((prevState) => (prevState === ASC ? DESC : ASC))
           }
         >
           Change order

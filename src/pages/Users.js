@@ -113,9 +113,9 @@ const Users = () => {
       <SearchFilter setUsers={setUsers} />
       <Table
         data={users}
-        setUsers={setUsers}
-        setShowModal={setShowModal}
-        setUser={setUser}
+        // setUsers={setUsers}
+        // setShowModal={setShowModal}
+        // setUser={setUser}
         onDeleteUser={handleDeleteUser}
         onEditClick={handleEditClick}
       />

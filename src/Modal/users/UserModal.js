@@ -22,80 +22,8 @@ const UserModal = ({
         <Modal.Header closeButton>
           <Modal.Title>{isPopulated ? "Edit User" : "Add User"}</Modal.Title>
         </Modal.Header>
-        {/* <Modal.Body>
-          <form onSubmit={formik.handleSubmit}>
-            <FormInput
-              type="text"
-              label="Name"
-              name="name"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values?.name}
-            />
-            {formik.errors.name && formik.touched.name && (
-              <p>{formik.errors.name}</p>
-            )}
-            <FormInput
-              type="text"
-              label="Username"
-              name="username"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.username}
-            />
-            {formik.errors.username && formik.touched.username && (
-              <p>{formik.errors.username}</p>
-            )}
-            <FormInput
-              type="email"
-              label="Email"
-              name="email"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik?.values?.email}
-            />
-            {formik.errors.email && formik.touched.email && (
-              <p>{formik.errors.email}</p>
-            )}
-            <FormInput
-              type="text"
-              label="Street"
-              name="address.street"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values?.address?.street}
-            />
-            {formik.errors?.address?.street &&
-              formik.touched?.address?.street && (
-                <p>{formik.errors?.address?.street}</p>
-              )}
-            <FormInput
-              type="text"
-              label="Suite"
-              name="address.suite"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values?.address?.suite}
-            />
-            {formik.errors?.address?.suite &&
-              formik.touched?.address?.suite && (
-                <p>{formik.errors?.address?.suite}</p>
-              )}
-            <FormInput
-              type="text"
-              label="City"
-              name="address.city"
-              onChange={formik.handleChange}
-              onBlur={() => formik.setFieldTouched}
-              value={formik?.values?.address?.city}
-            />
-            {formik.errors?.address?.city && formik.touched?.address?.city && (
-              <p>{formik?.errors?.address?.city}</p>
-            )}
-          </form>
-        </Modal.Body> */}
         <Modal.Body>
-        <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={formik.handleSubmit}>
             {inputsArray.map((input) => {
               if (input.address) {
                 return (
@@ -140,7 +68,7 @@ const UserModal = ({
                 );
               } else {
                 return (
-                  <Fragment key={input.id}>
+                  <Fragment key={input?.id}>
                     <FormInput
                       type={input?.type}
                       label={input?.label}
