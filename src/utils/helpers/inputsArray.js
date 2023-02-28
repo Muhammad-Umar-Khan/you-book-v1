@@ -1,0 +1,55 @@
+export const inputsArray = [
+  {
+    id: 1,
+    name: "name",
+    type: "text",
+    placeholder: "name",
+    label: "Name",
+    required: true,
+  },
+  {
+    id: 2,
+    name: "username",
+    type: "text",
+    placeholder: "username",
+    label: "Username",
+    required: true,
+  },
+  {
+    id: 3,
+    name: "email",
+    type: "email",
+    placeholder: "email",
+    label: "Email",
+    required: true,
+  },
+  {
+    id: 4,
+    address: {
+      street: {
+        id: 1,
+        name: "address.street",
+        type: "text",
+        placeholder: "City",
+        label: "Street",
+        required: true,
+      },
+      suite: {
+        id: 2,
+        name: "address.suite",
+        type: "text",
+        placeholder: "Suite",
+        label: "Suite",
+        required: true,
+      },
+      city: {
+        id: 3,
+        name: "address.city",
+        type: "text",
+        placeholder: "City",
+        label: "City",
+        required: true,
+      },
+    },
+  },
+];
