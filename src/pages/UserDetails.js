@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate, generatePath } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { USER_POSTS } from "../../src/utils/constants/routeConstants";
@@ -23,7 +23,7 @@ const UsersDetails = () => {
     return navigate(generatePath(USER_POSTS, { userId }));
   };
 
-  const loadUserDetails = async () => {
+  const loadUserDetails = useCallback(async () => {
     try {
       setDetails({
         ...details,
@@ -41,7 +41,7 @@ const UsersDetails = () => {
         isError: true,
       });
     }
-  };
+  }, [details, userId]);
 
   const tryAgain = () => {
     return navigate(0);
@@ -49,7 +49,7 @@ const UsersDetails = () => {
 
   useEffect(() => {
     loadUserDetails();
-  }, [userId]);
+  }, [userId, loadUserDetails]);
 
   if (details.isError) {
     return (

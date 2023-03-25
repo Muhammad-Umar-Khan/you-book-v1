@@ -29,12 +29,12 @@ const SearchFilter = ({ setUsers }) => {
       }, timeout);
     };
   }
-
+// eslint-disable-next-line
   const debounce = useCallback(debounced(loadFiltredUsers, 300), []);
 
   useEffect(() => {
     debounce(search);
-  }, [search]);
+  }, [search, debounce]);
 
   return (
     <div className="search">

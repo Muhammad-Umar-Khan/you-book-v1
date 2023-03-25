@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { postComments, postsForUser } from "../services/api";
 import { ASC, DESC } from "../../src/utils/constants/generalConstants";
@@ -68,7 +68,7 @@ const UserPosts = () => {
     });
   };
 
-  const loadPostsForUser = async () => {
+  const loadPostsForUser = useCallback(async () => {
     try {
       setPosts({
         ...posts,
@@ -93,7 +93,7 @@ const UserPosts = () => {
     } catch (error) {
       console.log(error?.message);
     }
-  };
+  }, [order, page, posts, validUserId]);
   const POSTS_PER_PAGE = 5;
 
   const TOTAL_PAGES = TOTAL_POSTS / POSTS_PER_PAGE;
@@ -115,7 +115,7 @@ const UserPosts = () => {
 
   useEffect(() => {
     loadPostsForUser();
-  }, [validUserId, order, page]);
+  }, [validUserId, order, page, loadPostsForUser]);
 
   return (
     <div className="container mt-5">
